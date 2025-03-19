@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -84,9 +85,9 @@ public class ProtocoloService {
 		};
 	}
 
-	public Protocolo insert(Protocolo protocolo, Integer id_m, Long id_s) {
-		Municipe mun = municipeRepository.getReferenceById(id_m);
-		Secretaria sec = secretariaRepository.getReferenceById(id_s);
+	public Protocolo insert(Protocolo protocolo, Integer id_municipe, Long id_secretaria) {
+		Municipe mun = municipeRepository.getReferenceById(id_municipe);
+		Secretaria sec = secretariaRepository.getReferenceById(id_secretaria);
 		Endereco end = enderecoRepository.getReferenceById(mun.getEndereco().getId_endereco());
 		String numeroProtocolo = this.gerarNumeroProtocolo();
 
@@ -94,18 +95,23 @@ public class ProtocoloService {
 		Prioridade prioridade = determinarPrioridade(protocolo.getAssunto());
 		protocolo.setPrioridade(prioridade);
 
-		// Definir a data do protocolo e calcular o prazo de conclusão
-		LocalDate dataProtocolo = LocalDate.now();
-		LocalDate prazoConclusao = dataProtocolo.plusDays(prioridade.getDiasParaResolver());
-
-		// Calcular a diferença de dias entre a data atual e o prazo de conclusão
-		long diasParaConclusao = dataProtocolo.until(prazoConclusao, ChronoUnit.DAYS);
+		// // Calcular a diferença de dias entre a data atual e o prazo de conclusão
+		// long diasParaConclusao = dataProtocolo.until(prazoConclusao,
+		// ChronoUnit.DAYS);
 
 		protocolo.setNumero_protocolo(numeroProtocolo);
 		protocolo.setMunicipe(mun);
 		protocolo.setEndereco(end);
 		protocolo.setSecretaria(sec);
-		protocolo.setPrazoConclusao(diasParaConclusao); // Salvar como long representando dias
+		// if ("PAGAMENTO_PENDENTE".equals(protocolo.getStatus())) {
+		// protocolo.setPrazoConclusao(null);
+		// } else {
+		// // Definir a data do protocolo e calcular o prazo de conclusão
+		// LocalDate dataProtocolo = LocalDate.now();
+		// LocalDate prazoConclusao =
+		// dataProtocolo.plusDays(prioridade.getDiasParaResolver());
+		// protocolo.setPrazoConclusao(prazoConclusao);
+		// }
 
 		return protocoloRepository.save(protocolo);
 	}
@@ -131,17 +137,37 @@ public class ProtocoloService {
 		entity.setStatus(obj.getStatus());
 	}
 
-	public Protocolo updateStatus(String numeroProtocolo, Protocolo status, String Nomefuncionario) {
+	public Protocolo updateStatus(String numeroProtocolo, Protocolo protocolo, String Nomefuncionario) {
 		try {
 			Protocolo entity = protocoloRepository.findByNumeroProtocolo(numeroProtocolo)
 					.orElseThrow(() -> new RuntimeException("Protocolo não encontrado"));
 
-			if (!entity.getStatus().equals(status.getStatus())) {
+					if (protocolo.getStatus().toString().trim().equalsIgnoreCase("CANCELADO")
+					|| protocolo.getStatus().toString().trim().equalsIgnoreCase("PAGAMENTO_PENDENTE")
+					|| protocolo.getStatus().toString().trim().equalsIgnoreCase("CONCLUIDO")
+					|| protocolo.getStatus().toString().trim().equalsIgnoreCase("RECUSADO")) {
+
+				// Se o status for CANCELADO, CONCLUIDO ou RECUSADO, definir prazo como null
+				entity.setPrazoConclusao(null);
+				System.out.println("\n\nStatus: " + protocolo.getStatus() + "\n\n");
+				System.out.println("\n\nPrazo: " + entity.getPrazoConclusao() + "\n\n");
+			} else {
+				// Caso contrário, calcular o prazo de conclusão com base na prioridade
+				Prioridade prioridade = protocolo.getPrioridade();
+				LocalDate dataProtocolo = LocalDate.now();
+				LocalDate prazoConclusao = dataProtocolo.plusDays(prioridade.getDiasParaResolver());
+				entity.setPrazoConclusao(prazoConclusao);
+				System.out.println("\n\nelse Status: " + protocolo.getStatus() + "\n\n");
+				System.out.println("\n\nelse Prazo: " + entity.getPrazoConclusao() + "\n\n");
+			}
+
+			if (!entity.getStatus().equals(protocolo.getStatus())) {
 				String mensagemLog = String.format(
 						"%s alterou status do protocolo " + entity.getNumero_protocolo() + " de %s para %s em %s",
-						Nomefuncionario, entity.getStatus(), status.getStatus(), LocalDateTime.now().format(formatter));
+						Nomefuncionario, entity.getStatus(), protocolo.getStatus(),
+						LocalDateTime.now().format(formatter));
 
-				updateData(entity, status);
+				updateData(entity, protocolo);
 
 				Log log = new Log();
 				log.setMensagem(mensagemLog);

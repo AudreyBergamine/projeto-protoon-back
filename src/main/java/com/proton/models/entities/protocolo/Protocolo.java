@@ -1,6 +1,7 @@
 package com.proton.models.entities.protocolo;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Set;
@@ -75,7 +76,7 @@ public class Protocolo implements Serializable {
 	private Set<Redirecionamento> redirecionamentos;
 
 	@Column(name = "prazo_conclusao")
-	private long prazoConclusao;
+	private LocalDate prazoConclusao;
 
 	@Enumerated(EnumType.STRING)
 	private Prioridade prioridade;
@@ -85,7 +86,7 @@ public class Protocolo implements Serializable {
 
 	public Protocolo(Integer id_protocolo, Secretaria secretaria, Municipe municipe, Endereco endereco,
 			String assunto, Date data_protocolo, String descricao, Status status,
-			Double valor, String numero_protocolo, long prazoConclusao) {
+			Double valor, String numero_protocolo, LocalDate prazoConclusao) {
 		this.id_protocolo = id_protocolo;
 		this.secretaria = secretaria;
 		this.municipe = municipe;
@@ -183,21 +184,21 @@ public class Protocolo implements Serializable {
 		this.numero_protocolo = numero_protocolo;
 	}
 
-	public long getPrazoConclusao() {
+	public LocalDate getPrazoConclusao() {
 		return prazoConclusao;
 	}
 
-	public void setPrazoConclusao(long prazoConclusao) {
+	public void setPrazoConclusao(LocalDate prazoConclusao) {
 		this.prazoConclusao = prazoConclusao;
 	}
 
 	public Prioridade getPrioridade() {
-        return prioridade;
-    }
+		return prioridade;
+	}
 
-    public void setPrioridade(Prioridade prioridade) {
-        this.prioridade = prioridade;
-    }
+	public void setPrioridade(Prioridade prioridade) {
+		this.prioridade = prioridade;
+	}
 
 	@Override
 	public int hashCode() {

@@ -77,15 +77,21 @@ public class DevolutivaController {
 
     @PostMapping(value = "/criar-devolutiva-boleto")
     public ResponseEntity<Devolutiva> insertDevolutivaBoleto(@RequestBody Protocolo protocolo) {
-        // Criar a devolutiva
-        Devolutiva devolutiva = new Devolutiva(null, null, protocolo, Instant.now(),
-                "O prazo de pagamento do boleto venceu");
+        // Criar a devolutiva apenas se o protocolo NÃO estiver cancelado
+        if (!protocolo.getStatus().equals("CANCELADO")) {
+            Devolutiva devolutiva = new Devolutiva(null, null, protocolo, Instant.now(),
+                    "O prazo de pagamento do boleto venceu");
 
-        // Salvar a devolutiva no banco
-        Devolutiva savedDevolutiva = devolutivaRepository.save(devolutiva);
+            // Salvar a devolutiva no banco
+            Devolutiva savedDevolutiva = devolutivaRepository.save(devolutiva);
 
-        // Retornar a devolutiva criada com status CREATED
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedDevolutiva);
+            // Retornar a devolutiva criada com status 201 CREATED
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedDevolutiva);
+        }
+
+        // Retorno caso o protocolo esteja cancelado
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(null); // Pode substituir null por uma devolutiva vazia ou uma mensagem
     }
 
     @GetMapping("/devolutiva-protocolo/{id_protocolo}") // retorna todas as devoluções de um protocolo, TODO organizar

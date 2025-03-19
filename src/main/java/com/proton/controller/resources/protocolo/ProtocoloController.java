@@ -4,7 +4,6 @@ import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -113,12 +112,12 @@ public class ProtocoloController {
         };
     }
 
-    @PostMapping(value = "/abrir-protocolos/{id_s}") // Gera novos protocolos
-    public ResponseEntity<Protocolo> insertByToken(@RequestBody Protocolo protocolo, @PathVariable Long id_s,
+    @PostMapping(value = "/abrir-protocolos/{id_secretaria}") // Gera novos protocolos
+    public ResponseEntity<Protocolo> insertByToken(@RequestBody Protocolo protocolo, @PathVariable Long id_secretaria,
             HttpServletRequest request) {
-        Integer id_m = authenticationService.getUserIdFromToken(request);
-        Municipe mun = municipeRepository.getReferenceById(id_m);
-        Secretaria sec = secretariaRepository.getReferenceById(id_s);
+        Integer id_municipe = authenticationService.getUserIdFromToken(request);
+        Municipe mun = municipeRepository.getReferenceById(id_municipe);
+        Secretaria sec = secretariaRepository.getReferenceById(id_secretaria);
         Endereco end = enderecoRepository.getReferenceById(mun.getEndereco().getId_endereco());
         String numeroProtocolo = protocoloService.gerarNumeroProtocolo();
         protocolo.setNumero_protocolo(numeroProtocolo);
@@ -130,16 +129,6 @@ public class ProtocoloController {
         // Definir a prioridade com base no assunto
         Prioridade prioridade = determinarPrioridade(protocolo.getAssunto());
         protocolo.setPrioridade(prioridade);
-
-        // Definir a data do protocolo e calcular o prazo de conclusão
-        LocalDate dataProtocolo = LocalDate.now();
-        LocalDate prazoConclusao = dataProtocolo.plusDays(prioridade.getDiasParaResolver());
-
-        // Calcular a diferença de dias entre a data atual e o prazo de conclusão
-        long diasParaConclusao = dataProtocolo.until(prazoConclusao, ChronoUnit.DAYS);
-
-        // Definir o prazo de conclusão como o valor em dias
-        protocolo.setPrazoConclusao(diasParaConclusao); // Salvar como long representando dias
 
         String mensagemLog = String.format(
                 "Foi Registrado um novo protocolo: " + protocolo.getNumero_protocolo() + " em %s",
@@ -154,33 +143,28 @@ public class ProtocoloController {
         return ResponseEntity.created(uri).body(protocolo);
     }
 
-    @PostMapping(value = "/abrir-protocolos-reclamar/{id_s}") // Gera novos protocolos
-    public ResponseEntity<Protocolo> insertReclamarByToken(@RequestBody Protocolo protocolo, @PathVariable Long id_s,
+    @PostMapping(value = "/abrir-protocolos-reclamar/{id_secretaria}") // Gera novos protocolos
+    public ResponseEntity<Protocolo> insertReclamarByToken(@RequestBody Protocolo protocolo,
+            @PathVariable Long id_secretaria,
             HttpServletRequest request) {
         Integer id_m = authenticationService.getUserIdFromToken(request);
-        Municipe mun = municipeRepository.getReferenceById(id_m);
-        Secretaria sec = secretariaRepository.getReferenceById(id_s);
-        Endereco end = enderecoRepository.getReferenceById(mun.getEndereco().getId_endereco());
+        Municipe municipe = municipeRepository.getReferenceById(id_m);
+        Secretaria secretaria = secretariaRepository.getReferenceById(id_secretaria);
+        Endereco endereco = enderecoRepository.getReferenceById(municipe.getEndereco().getId_endereco());
         String numeroProtocolo = protocoloService.gerarNumeroProtocolo();
         protocolo.setNumero_protocolo(numeroProtocolo);
-        protocolo.setMunicipe(mun);
-        protocolo.setEndereco(end);
-        protocolo.setSecretaria(sec);
+        protocolo.setMunicipe(municipe);
+        protocolo.setEndereco(endereco);
+        protocolo.setSecretaria(secretaria);
         protocoloRepository.save(protocolo);
 
         // Definir a prioridade com base no assunto
         Prioridade prioridade = determinarPrioridade(protocolo.getAssunto());
         protocolo.setPrioridade(prioridade);
 
-        // Definir a data do protocolo e calcular o prazo de conclusão
         LocalDate dataProtocolo = LocalDate.now();
         LocalDate prazoConclusao = dataProtocolo.plusDays(prioridade.getDiasParaResolver());
-
-        // Calcular a diferença de dias entre a data atual e o prazo de conclusão
-        long diasParaConclusao = dataProtocolo.until(prazoConclusao, ChronoUnit.DAYS);
-
-        // Definir o prazo de conclusão como o valor em dias
-        protocolo.setPrazoConclusao(diasParaConclusao); // Salvar como long representando dias
+        protocolo.setPrazoConclusao(prazoConclusao);
 
         String mensagemLog = String.format(
                 "Foi Registrado um novo protocolo: " + protocolo.getNumero_protocolo() + " em %s",
@@ -198,29 +182,19 @@ public class ProtocoloController {
     @PostMapping(value = "/abrir-protocolos-sem-secretaria") // Gera novos protocolos
     public ResponseEntity<Protocolo> insertSecretariaNullByToken(@RequestBody Protocolo protocolo,
             HttpServletRequest request) {
-        Integer id_m = authenticationService.getUserIdFromToken(request);
-        Municipe mun = municipeRepository.getReferenceById(id_m);
-        Endereco end = enderecoRepository.getReferenceById(mun.getEndereco().getId_endereco());
+        Integer id_municipe = authenticationService.getUserIdFromToken(request);
+        Municipe muninicipe = municipeRepository.getReferenceById(id_municipe);
+        Endereco endereco = enderecoRepository.getReferenceById(muninicipe.getEndereco().getId_endereco());
         String numeroProtocolo = protocoloService.gerarNumeroProtocolo();
         protocolo.setNumero_protocolo(numeroProtocolo);
-        protocolo.setMunicipe(mun);
-        protocolo.setEndereco(end);
+        protocolo.setMunicipe(muninicipe);
+        protocolo.setEndereco(endereco);
         protocolo.setSecretaria(null);
         protocoloRepository.save(protocolo);
 
         // Definir a prioridade com base no assunto
         Prioridade prioridade = determinarPrioridade(protocolo.getAssunto());
         protocolo.setPrioridade(prioridade);
-
-        // Definir a data do protocolo e calcular o prazo de conclusão
-        LocalDate dataProtocolo = LocalDate.now();
-        LocalDate prazoConclusao = dataProtocolo.plusDays(prioridade.getDiasParaResolver());
-
-        // Calcular a diferença de dias entre a data atual e o prazo de conclusão
-        long diasParaConclusao = dataProtocolo.until(prazoConclusao, ChronoUnit.DAYS);
-
-        // Definir o prazo de conclusão como o valor em dias
-        protocolo.setPrazoConclusao(diasParaConclusao); // Salvar como long representando dias
 
         String mensagemLog = String.format(
                 "Foi Registrado um novo protocolo: " + protocolo.getNumero_protocolo() + " em %s",
@@ -235,11 +209,45 @@ public class ProtocoloController {
         return ResponseEntity.created(uri).body(protocolo);
     }
 
-    @PostMapping(value = "/abrir-protocolos/{id_m}/{id_s}") // Gera novos protocolos
-    public ResponseEntity<Protocolo> insert(@RequestBody Protocolo protocolo, @PathVariable Integer id_m,
-            @PathVariable Long id_s) {
+    @PostMapping(value = "/abrir-protocolos-reclamar-sem-secretaria") // Gera novos protocolos
+    public ResponseEntity<Protocolo> insertReclamarNullByToken(@RequestBody Protocolo protocolo,
+            HttpServletRequest request) {
+        Integer id_municipe = authenticationService.getUserIdFromToken(request);
+        Municipe muninicipe = municipeRepository.getReferenceById(id_municipe);
+        Endereco endereco = enderecoRepository.getReferenceById(muninicipe.getEndereco().getId_endereco());
+        String numeroProtocolo = protocoloService.gerarNumeroProtocolo();
+        protocolo.setNumero_protocolo(numeroProtocolo);
+        protocolo.setMunicipe(muninicipe);
+        protocolo.setEndereco(endereco);
+        protocolo.setSecretaria(null);
+        protocoloRepository.save(protocolo);
 
-        Protocolo prot = protocoloService.insert(protocolo, id_m, id_s);
+        // Definir a prioridade com base no assunto
+        Prioridade prioridade = determinarPrioridade(protocolo.getAssunto());
+        protocolo.setPrioridade(prioridade);
+
+        LocalDate dataProtocolo = LocalDate.now();
+        LocalDate prazoConclusao = dataProtocolo.plusDays(prioridade.getDiasParaResolver());
+        protocolo.setPrazoConclusao(prazoConclusao);
+
+        String mensagemLog = String.format(
+                "Foi Registrado um novo protocolo: " + protocolo.getNumero_protocolo() + " em %s",
+                LocalDateTime.now().format(formatter));
+
+        Log log = new Log();
+        log.setMensagem(mensagemLog);
+        logRepository.save(log);
+
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+                .buildAndExpand(protocolo.getId_protocolo()).toUri();
+        return ResponseEntity.created(uri).body(protocolo);
+    }
+
+    @PostMapping(value = "/abrir-protocolos/{id_municipe}/{id_secretaria}") // Gera novos protocolos
+    public ResponseEntity<Protocolo> insert(@RequestBody Protocolo protocolo, @PathVariable Integer id_municipe,
+            @PathVariable Long id_secretaria) {
+
+        Protocolo prot = protocoloService.insert(protocolo, id_municipe, id_secretaria);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(protocolo.getId_protocolo()).toUri();
         return ResponseEntity.created(uri).body(prot);

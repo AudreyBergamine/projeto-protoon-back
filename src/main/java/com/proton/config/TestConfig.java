@@ -113,32 +113,39 @@ public class TestConfig implements CommandLineRunner {
                 LocalDate prazo2 = dataProtocoloLocalDate.plusDays(5);
                 LocalDate prazo3 = dataProtocoloLocalDate.plusDays(10);
 
-                // Converter de volta para Date
-                long prazoConclusao1 = ChronoUnit.DAYS.between(LocalDate.now(), prazo1);
-                long prazoConclusao2 = ChronoUnit.DAYS.between(LocalDate.now(), prazo2);
-                long prazoConclusao3 = ChronoUnit.DAYS.between(LocalDate.now(), prazo3);
+                // // Converter de volta para Date
+                // long prazoConclusao1 = ChronoUnit.DAYS.between(LocalDate.now(), prazo1);
+                // long prazoConclusao2 = ChronoUnit.DAYS.between(LocalDate.now(), prazo2);
+                // long prazoConclusao3 = ChronoUnit.DAYS.between(LocalDate.now(), prazo3);
 
                 Protocolo prot1 = new Protocolo(null, secSaude, mun1, end2, "Assunto do protocolo", new Date(),
                                 "Descrição do protocolo", Status.CIENCIA, 100.0, "001-2025",
-                                prazoConclusao1);
+                                prazo1);
 
                 Protocolo prot2 = new Protocolo(null, secEducacao, mun2, end3, "Outro assunto", new Date(),
                                 "Outra descrição",
                                 Status.PAGAMENTO_PENDENTE,
-                                150.0, "002-2025", prazoConclusao2);
+                                150.0, "002-2025", prazo2);
 
                 Protocolo prot3 = new Protocolo(null, secMeioAmb, mun2, end3, "Teste", new Date(), "teste",
                                 Status.CONCLUIDO,
-                                150.0, "003-2025", prazoConclusao3);
+                                150.0, "003-2025", prazo3);
 
                 Protocolo prot4 = new Protocolo(null, secMeioAmb, mun1, end2, "Assunto do protocolo", new Date(),
-                                "Descrição do protocolo", Status.CIENCIA, 100.0, "004-2025", prazoConclusao1);
+                                "Descrição do protocolo", Status.CIENCIA, 100.0, "004-2025", prazo1);
 
                 Protocolo prot5 = new Protocolo(null, secSaude, mun1, end2, "Assunto do protocolo", new Date(),
-                                "Descrição do protocolo", Status.CIENCIA, 100.0, "005-2025", prazoConclusao2);
+                                "Descrição do protocolo", Status.CIENCIA, 100.0, "005-2025", prazo2);
 
                 Protocolo prot6 = new Protocolo(null, secSaude, mun1, end2, "Assunto do protocolo", new Date(),
-                                "Descrição do protocolo", Status.CIENCIA, 100.0, "006-2025", prazoConclusao3);
+                                "Descrição do protocolo", Status.CIENCIA, 100.0, "006-2025", prazo3);
+
+                prot1.setPrioridade(Prioridade.MEDIA);
+                prot2.setPrioridade(Prioridade.BAIXA);
+                prot3.setPrioridade(Prioridade.ALTA);
+                prot4.setPrioridade(Prioridade.MEDIA);
+                prot5.setPrioridade(Prioridade.BAIXA);
+                prot6.setPrioridade(Prioridade.ALTA);
 
                 Assunto assunto1 = new Assunto(1, "Problema de iluminação pública", secSaude, 130.00, Prioridade.MEDIA,
                                 7);

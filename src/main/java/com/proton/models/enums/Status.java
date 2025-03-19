@@ -5,7 +5,8 @@ public enum Status {
     CIENCIA(2, "Ciência"), //TODO: Poderia ser "Em Análise? "
     CIENCIA_ENTREGA(3, "Ciência e entrega"), // TODO: Poderia ser "Em Análise e Entrega?"
     CONCLUIDO(4, "Concluído"),
-    CANCELADO(4, "Cancelado");
+    CANCELADO(5, "Cancelado"),
+    RECUSADO(6, "Recusado");
 
     private final int id; //private final, para não ser alterado
     private final String descricao; //private final, para não ser alterado
