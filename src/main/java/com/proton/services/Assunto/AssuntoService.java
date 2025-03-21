@@ -43,6 +43,7 @@ public class AssuntoService {
         updateData(entity, obj);
         return assuntoRepository.save(entity);
     }
+    
 
     public Assunto create(Assunto obj) {
         Secretaria secretaria = secretariaRepository.findById(obj.getSecretaria().getId_secretaria())
