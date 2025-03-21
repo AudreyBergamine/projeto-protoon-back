@@ -32,7 +32,7 @@ public class AssuntoService {
         return obj.orElseThrow(() -> new RuntimeException("Assunto não encontrado"));
     }
 
-    public void updateData(Assunto entity, Assunto obj) {       
+    public void updateData(Assunto entity, Assunto obj) {
         entity.setAssunto(obj.getAssunto());
         entity.setSecretaria(obj.getSecretaria());
         entity.setPrioridade(obj.getPrioridade()); // Atualiza prioridade
@@ -43,18 +43,19 @@ public class AssuntoService {
         updateData(entity, obj);
         return assuntoRepository.save(entity);
     }
-    
 
     public Assunto create(Assunto obj) {
         Secretaria secretaria = secretariaRepository.findById(obj.getSecretaria().getId_secretaria())
                 .orElseThrow(() -> new RuntimeException("Secretaria não encontrada"));
         obj.setSecretaria(secretaria);
-
         if (obj.getPrioridade() == null) {
-            obj.setPrioridade(Prioridade.BAIXA); // Define prioridade padrão
+            throw new IllegalArgumentException("Prioridade não informada");
         }
-
+        // Busca a prioridade pelo ID, achei mais facil assim
+        Prioridade prioridade = Prioridade.fromId(obj.getPrioridade().getId()); // Acessando o ID da prioridade
+        obj.setPrioridade(prioridade); // Define a prioridade no objeto
+        // Define o tempo de resolução, usando o valor do enum
+        obj.setTempoResolucao(prioridade.getDiasParaResolver());
         return assuntoRepository.save(obj);
     }
 }
-
