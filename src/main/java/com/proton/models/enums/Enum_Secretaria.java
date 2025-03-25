@@ -60,7 +60,7 @@ public enum Enum_Secretaria {
             case COMUNICACAO:
                 return "Secretaria de Comunicação";
             case CULTURA:
-                return "Secretaria Cultura";
+                return "Secretaria de Cultura";
             case DEFESA_CIVIL:
                 return "Secretaria de Defesa Civil";
             case DESENVOLVIMENTO_ECONOMICO:
