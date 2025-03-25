@@ -58,4 +58,15 @@ public class AssuntoService {
         obj.setTempoResolucao(prioridade.getDiasParaResolver());
         return assuntoRepository.save(obj);
     }
+
+    public Prioridade determinarPrioridade(String nomeAssunto) {
+        Assunto assunto = assuntoRepository.findByAssunto(nomeAssunto);
+        
+        if (assunto != null && assunto.getPrioridade() != null) {
+            return assunto.getPrioridade(); // Retorna a prioridade cadastrada no banco
+        }
+        
+        return Prioridade.MEDIA; // Define um padrão caso não encontre
+    }
+    
 }

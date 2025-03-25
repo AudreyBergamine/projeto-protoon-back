@@ -7,5 +7,5 @@ import com.proton.models.entities.assunto.Assunto;
 
 @Repository
 public interface AssuntoRepository extends JpaRepository<Assunto, Integer> {
-    
+    Assunto findByAssunto(String assunto); // Busca um Assunto pelo nome
 }

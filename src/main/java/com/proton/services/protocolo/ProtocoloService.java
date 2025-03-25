@@ -24,6 +24,7 @@ import com.proton.models.repositories.LogRepository;
 import com.proton.models.repositories.MunicipeRepository;
 import com.proton.models.repositories.ProtocoloRepository;
 import com.proton.models.repositories.SecretariaRepository;
+import com.proton.services.Assunto.AssuntoService;
 import com.proton.services.exceptions.ResourceNotFoundException;
 
 import com.proton.services.municipe.MunicipeService;
@@ -38,6 +39,9 @@ public class ProtocoloService {
 
 	@Autowired
 	private MunicipeService municipeService;
+
+	@Autowired
+    private AssuntoService assuntoService;
 
 	@Autowired
 	private MunicipeRepository municipeRepository;
@@ -73,17 +77,7 @@ public class ProtocoloService {
 	public Protocolo findByNumero_protocolo(String numero_protocolo) {
 		Optional<Protocolo> obj = protocoloRepository.findByNumeroProtocolo(numero_protocolo);
 		return obj.get();
-	}
-
-	private Prioridade determinarPrioridade(String assunto) {
-		return switch (assunto.toLowerCase()) {
-			case "problema de iluminação pública" -> Prioridade.MEDIA;
-			case "problema de coleta de lixo" -> Prioridade.BAIXA;
-			case "problema de trânsito" -> Prioridade.ALTA;
-			case "outros" -> Prioridade.BAIXA;
-			default -> Prioridade.MEDIA; // Definição padrão para casos não mapeados
-		};
-	}
+	}	
 
 	public Protocolo insert(Protocolo protocolo, Integer id_municipe, Long id_secretaria) {
 		Municipe mun = municipeRepository.getReferenceById(id_municipe);
@@ -92,7 +86,7 @@ public class ProtocoloService {
 		String numeroProtocolo = this.gerarNumeroProtocolo();
 
 		// Definir a prioridade com base no assunto
-		Prioridade prioridade = determinarPrioridade(protocolo.getAssunto());
+		Prioridade prioridade = assuntoService.determinarPrioridade(protocolo.getAssunto());
 		protocolo.setPrioridade(prioridade);
 
 		// // Calcular a diferença de dias entre a data atual e o prazo de conclusão

@@ -28,6 +28,7 @@ import com.proton.models.repositories.EnderecoRepository;
 import com.proton.models.repositories.FuncionarioRepository;
 import com.proton.models.repositories.LogRepository;
 import com.proton.models.repositories.ProtocoloRepository;
+import com.proton.services.Assunto.AssuntoService;
 import com.proton.services.protocolo.ProtocoloService;
 import com.proton.services.user.AuthenticationService;
 
@@ -62,6 +63,9 @@ public class ProtocoloController {
 
     @Autowired
     private LogRepository logRepository;
+
+    @Autowired
+    private AssuntoService assuntoService;
 
     @Autowired
     private FuncionarioRepository funcionarioRepository;
@@ -99,18 +103,7 @@ public class ProtocoloController {
     public ResponseEntity<Protocolo> findById(@PathVariable Integer id) {
         Protocolo obj = protocoloService.findById(id);
         return ResponseEntity.ok().body(obj);// retorna UM protocolo
-    }
-
-    private Prioridade determinarPrioridade(String assunto) {
-        System.out.println("\n\nAssunto recebido: " + assunto + "\n\n"); // Verifique o valor do assunto aqui
-        return switch (assunto.toLowerCase()) {
-            case "problema de iluminação pública" -> Prioridade.MEDIA;
-            case "problema de coleta de lixo" -> Prioridade.BAIXA;
-            case "problema de trânsito" -> Prioridade.ALTA;
-            case "outros" -> Prioridade.BAIXA;
-            default -> Prioridade.MEDIA; // Definição padrão para casos não mapeados
-        };
-    }
+    }    
 
     @PostMapping(value = "/abrir-protocolos/{id_secretaria}") // Gera novos protocolos
     public ResponseEntity<Protocolo> insertByToken(@RequestBody Protocolo protocolo, @PathVariable Long id_secretaria,
@@ -127,7 +120,7 @@ public class ProtocoloController {
         protocoloRepository.save(protocolo);
 
         // Definir a prioridade com base no assunto
-        Prioridade prioridade = determinarPrioridade(protocolo.getAssunto());
+        Prioridade prioridade = assuntoService.determinarPrioridade(protocolo.getAssunto());
         protocolo.setPrioridade(prioridade);
 
         String mensagemLog = String.format(
@@ -159,7 +152,7 @@ public class ProtocoloController {
         protocoloRepository.save(protocolo);
 
         // Definir a prioridade com base no assunto
-        Prioridade prioridade = determinarPrioridade(protocolo.getAssunto());
+        Prioridade prioridade = assuntoService.determinarPrioridade(protocolo.getAssunto());
         protocolo.setPrioridade(prioridade);
 
         LocalDate dataProtocolo = LocalDate.now();
@@ -193,7 +186,7 @@ public class ProtocoloController {
         protocoloRepository.save(protocolo);
 
         // Definir a prioridade com base no assunto
-        Prioridade prioridade = determinarPrioridade(protocolo.getAssunto());
+        Prioridade prioridade = assuntoService.determinarPrioridade(protocolo.getAssunto());
         protocolo.setPrioridade(prioridade);
 
         String mensagemLog = String.format(
@@ -223,7 +216,7 @@ public class ProtocoloController {
         protocoloRepository.save(protocolo);
 
         // Definir a prioridade com base no assunto
-        Prioridade prioridade = determinarPrioridade(protocolo.getAssunto());
+        Prioridade prioridade = assuntoService.determinarPrioridade(protocolo.getAssunto());
         protocolo.setPrioridade(prioridade);
 
         LocalDate dataProtocolo = LocalDate.now();

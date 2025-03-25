@@ -71,4 +71,19 @@ public class SecretariaResource {
 
         return ResponseEntity.ok(sec.getProtocolos());
     }
+
+    @GetMapping("/prioridades")
+    public ResponseEntity<List<Map<String, Object>>> getPrioridades() {
+        List<Map<String, Object>> prioridades = new ArrayList<>();
+
+        for (Prioridade prioridade : Prioridade.values()) {
+            Map<String, Object> item = new HashMap<>();
+            item.put("id", prioridade.getId());
+            item.put("descricao", prioridade.name()); // Nome da prioridade (BAIXA, MEDIA, etc.)
+            item.put("diasParaResolver", prioridade.getDiasParaResolver());
+            prioridades.add(item);
+        }
+
+        return ResponseEntity.ok(prioridades);
+    }
 }

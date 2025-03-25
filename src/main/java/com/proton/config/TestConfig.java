@@ -109,9 +109,9 @@ public class TestConfig implements CommandLineRunner {
                                 .atZone(ZoneId.systemDefault()).toLocalDate();
 
                 // Adicionar 7 dias
-                LocalDate prazo1 = dataProtocoloLocalDate.plusDays(3);
+                LocalDate prazo1 = dataProtocoloLocalDate.plusDays(7);
                 LocalDate prazo2 = dataProtocoloLocalDate.plusDays(5);
-                LocalDate prazo3 = dataProtocoloLocalDate.plusDays(10);
+                LocalDate prazo3 = dataProtocoloLocalDate.plusDays(3);
 
                 // // Converter de volta para Date
                 // long prazoConclusao1 = ChronoUnit.DAYS.between(LocalDate.now(), prazo1);
@@ -120,22 +120,22 @@ public class TestConfig implements CommandLineRunner {
 
                 Protocolo prot1 = new Protocolo(null, secSaude, mun1, end2, "Assunto do protocolo", new Date(),
                                 "Descrição do protocolo", Status.CIENCIA, 100.0, "001-2025",
-                                prazo1);
+                                prazo2);
 
                 Protocolo prot2 = new Protocolo(null, secEducacao, mun2, end3, "Outro assunto", new Date(),
                                 "Outra descrição",
                                 Status.PAGAMENTO_PENDENTE,
-                                150.0, "002-2025", prazo2);
+                                150.0, "002-2025", prazo1);
 
                 Protocolo prot3 = new Protocolo(null, secMeioAmb, mun2, end3, "Teste", new Date(), "teste",
                                 Status.CONCLUIDO,
                                 150.0, "003-2025", prazo3);
 
                 Protocolo prot4 = new Protocolo(null, secMeioAmb, mun1, end2, "Assunto do protocolo", new Date(),
-                                "Descrição do protocolo", Status.CIENCIA, 100.0, "004-2025", prazo1);
+                                "Descrição do protocolo", Status.CIENCIA, 100.0, "004-2025", prazo2);
 
                 Protocolo prot5 = new Protocolo(null, secSaude, mun1, end2, "Assunto do protocolo", new Date(),
-                                "Descrição do protocolo", Status.CIENCIA, 100.0, "005-2025", prazo2);
+                                "Descrição do protocolo", Status.CIENCIA, 100.0, "005-2025", prazo1);
 
                 Protocolo prot6 = new Protocolo(null, secSaude, mun1, end2, "Assunto do protocolo", new Date(),
                                 "Descrição do protocolo", Status.CIENCIA, 100.0, "006-2025", prazo3);
@@ -148,14 +148,14 @@ public class TestConfig implements CommandLineRunner {
                 prot6.setPrioridade(Prioridade.ALTA);
 
                 Assunto assunto1 = new Assunto(1, "Problema de iluminação pública", secSaude, 130.00, Prioridade.MEDIA,
-                                7);
+                                5);
 
                 Assunto assunto2 = new Assunto(2, "Problema de coleta de lixo", secEducacao, 150.00, Prioridade.BAIXA,
-                                10);
+                                7);
 
                 Assunto assunto3 = new Assunto(3, "Problema de trânsito", secMeioAmb, 30.00, Prioridade.ALTA, 3);
 
-                Assunto assunto4 = new Assunto(4, "Outros", secSaude, 30.00, Prioridade.BAIXA, 10);
+                Assunto assunto4 = new Assunto(4, "Outros", secSaude, 30.00, Prioridade.BAIXA, 7);
 
                 Devolutiva dev1 = new Devolutiva(null, null, prot1, Instant.now(), "Teste");
                 // Manda para o banco de dados

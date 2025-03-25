@@ -1,9 +1,9 @@
 package com.proton.models.enums;
 
 public enum Enum_Secretaria {
-    ADMINISTRACAO(1),
-    AGRICULTURA(2),
-    ASSISTENCIA_SOCIAL(3),
+    ADMINISTRACAO(26),
+    AGRICULTURA(27),
+    ASSISTENCIA_SOCIAL(28),
     ASSUNTOS_JURIDICOS(4),
     COMUNICACAO(5),
     CULTURA(6),
