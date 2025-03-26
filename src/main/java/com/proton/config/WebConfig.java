@@ -12,8 +12,12 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-            .allowedOrigins("http://localhost:3000", "http://localhost:8081", "https://projeto-protoon-front.vercel.app/", "https://proto-on-beta.vercel.app/",
-            "https://main--resonant-rugelach-e9d9de.netlify.app")
+            // .allowedOrigins(
+            .allowedOriginPatterns(
+                "*"
+            // "http://localhost:3000", "http://localhost:8081", "https://projeto-protoon-front.vercel.app/", "https://proto-on-beta.vercel.app/",
+            // "https://main--resonant-rugelach-e9d9de.netlify.app"
+            )
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Adicionando suporte para o método OPTIONS
             .allowedHeaders("*")
             .allowCredentials(true)
