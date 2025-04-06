@@ -88,9 +88,9 @@ public class DevolutivaController {
                     // Enviar email de notificação
                     String mensagemEmail = construirMensagemEmailDevolutivaCriada(protocolo, muninicipe, insertDevolutiva);
                     notificacaoService.enviarNotificacaoProtocolo(
-                muninicipe.getEmail(),
-                protocolo.getNumero_protocolo(),
-                mensagemEmail
+                        muninicipe.getEmail(),
+                        protocolo.getNumero_protocolo(),
+                        mensagemEmail
             );
             return ResponseEntity.status(HttpStatus.CREATED).body(insertDevolutiva);
         } else {
