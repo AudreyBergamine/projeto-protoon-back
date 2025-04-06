@@ -1,6 +1,8 @@
 package com.proton.controller.resources.protocolo;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +16,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.proton.models.entities.municipe.Municipe;
 import com.proton.models.entities.protocolo.Devolutiva;
 import com.proton.models.entities.protocolo.Protocolo;
 import com.proton.models.repositories.DevolutivaRepository;
 import com.proton.models.repositories.FuncionarioRepository;
+import com.proton.services.notificacaoProtocolo.NotificacaoProtocoloService;
 import com.proton.services.protocolo.DevolutivaService;
+import com.proton.services.protocolo.ProtocoloService;
 import com.proton.services.user.AuthenticationService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,6 +43,14 @@ public class DevolutivaController {
 
     @Autowired
     private AuthenticationService authenticationService;
+    
+    @Autowired
+    private NotificacaoProtocoloService notificacaoService;
+
+    @Autowired
+    private ProtocoloService protocoloService;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     @GetMapping
     public ResponseEntity<List<Devolutiva>> findAll() {
@@ -69,6 +82,16 @@ public class DevolutivaController {
         if (id_funcionario != null) {
             Devolutiva insertDevolutiva = devolutivaService.insert(devolutiva, id_funcionario, id_Protocolo,
                     id_secretaria);
+
+                    Protocolo protocolo = protocoloService.findById(id_Protocolo);
+                    Municipe muninicipe = protocolo.getMunicipe();
+                    // Enviar email de notificação
+                    String mensagemEmail = construirMensagemEmailDevolutivaCriada(protocolo, muninicipe, insertDevolutiva);
+                    notificacaoService.enviarNotificacaoProtocolo(
+                muninicipe.getEmail(),
+                protocolo.getNumero_protocolo(),
+                mensagemEmail
+            );
             return ResponseEntity.status(HttpStatus.CREATED).body(insertDevolutiva);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -113,5 +136,18 @@ public class DevolutivaController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Erro ao deletar devolutiva: " + e.getMessage());
         }
+    }
+
+     private String construirMensagemEmailDevolutivaCriada(Protocolo protocolo, Municipe municipe, Devolutiva devolutiva) {
+        return String.format(
+            "Devolutiva #%s criada\n" +
+            "Assunto: %s\n" +
+            "Prioridade: %s\n" +
+            "Data: %s",
+            protocolo.getNumero_protocolo(),
+            devolutiva.getDevolutiva(),
+            protocolo.getPrioridade().toString(),
+            LocalDateTime.now().format(formatter)
+        );
     }
 }

@@ -5,12 +5,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -22,22 +26,18 @@ import com.proton.models.entities.municipe.Municipe;
 import com.proton.models.entities.protocolo.Protocolo;
 import com.proton.models.entities.secretaria.Secretaria;
 import com.proton.models.enums.Prioridade;
-import com.proton.models.repositories.MunicipeRepository;
-import com.proton.models.repositories.SecretariaRepository;
 import com.proton.models.repositories.EnderecoRepository;
 import com.proton.models.repositories.FuncionarioRepository;
 import com.proton.models.repositories.LogRepository;
+import com.proton.models.repositories.MunicipeRepository;
 import com.proton.models.repositories.ProtocoloRepository;
+import com.proton.models.repositories.SecretariaRepository;
 import com.proton.services.Assunto.AssuntoService;
+import com.proton.services.notificacaoProtocolo.NotificacaoProtocoloService;
 import com.proton.services.protocolo.ProtocoloService;
 import com.proton.services.user.AuthenticationService;
 
 import jakarta.servlet.http.HttpServletRequest;
-
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/protoon/protocolo")
@@ -69,6 +69,9 @@ public class ProtocoloController {
 
     @Autowired
     private FuncionarioRepository funcionarioRepository;
+
+    @Autowired
+    private NotificacaoProtocoloService notificacaoService;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
@@ -105,7 +108,7 @@ public class ProtocoloController {
         return ResponseEntity.ok().body(obj);// retorna UM protocolo
     }    
 
-    @PostMapping(value = "/abrir-protocolos/{id_secretaria}") // Gera novos protocolos
+    @PostMapping(value = "/abrir-protocolos/{id_secretaria}")
     public ResponseEntity<Protocolo> insertByToken(@RequestBody Protocolo protocolo, @PathVariable Long id_secretaria,
             HttpServletRequest request) {
         Integer id_municipe = authenticationService.getUserIdFromToken(request);
@@ -117,124 +120,116 @@ public class ProtocoloController {
         protocolo.setMunicipe(mun);
         protocolo.setEndereco(end);
         protocolo.setSecretaria(sec);
-        protocoloRepository.save(protocolo);
-
+        
         // Definir a prioridade com base no assunto
         Prioridade prioridade = assuntoService.determinarPrioridade(protocolo.getAssunto());
         protocolo.setPrioridade(prioridade);
-
+        
+        protocoloRepository.save(protocolo);
+    
+        // Enviar email de notificação
+        String mensagemEmail = construirMensagemEmailProtocoloCriado(protocolo, mun);
+        notificacaoService.enviarNotificacaoProtocolo(
+            mun.getEmail(),
+            protocolo.getNumero_protocolo(),
+            mensagemEmail
+        );
+    
         String mensagemLog = String.format(
                 "Foi Registrado um novo protocolo: " + protocolo.getNumero_protocolo() + " em %s",
                 LocalDateTime.now().format(formatter));
-
+    
         Log log = new Log();
         log.setMensagem(mensagemLog);
         logRepository.save(log);
-
+    
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(protocolo.getId_protocolo()).toUri();
         return ResponseEntity.created(uri).body(protocolo);
     }
+    @PostMapping(value = "/abrir-protocolos-reclamar/{id_secretaria}")
+public ResponseEntity<Protocolo> insertReclamarByToken(@RequestBody Protocolo protocolo,
+        @PathVariable Long id_secretaria,
+        HttpServletRequest request) {
+    Integer id_m = authenticationService.getUserIdFromToken(request);
+    Municipe municipe = municipeRepository.getReferenceById(id_m);
+    Secretaria secretaria = secretariaRepository.getReferenceById(id_secretaria);
+    Endereco endereco = enderecoRepository.getReferenceById(municipe.getEndereco().getId_endereco());
+    String numeroProtocolo = protocoloService.gerarNumeroProtocolo();
+    protocolo.setNumero_protocolo(numeroProtocolo);
+    protocolo.setMunicipe(municipe);
+    protocolo.setEndereco(endereco);
+    protocolo.setSecretaria(secretaria);
+    
+    // Definir a prioridade com base no assunto
+    Prioridade prioridade = assuntoService.determinarPrioridade(protocolo.getAssunto());
+    protocolo.setPrioridade(prioridade);
+    
+    LocalDate dataProtocolo = LocalDate.now();
+    LocalDate prazoConclusao = dataProtocolo.plusDays(prioridade.getDiasParaResolver());
+    protocolo.setPrazoConclusao(prazoConclusao);
+    
+    protocoloRepository.save(protocolo);
 
-    @PostMapping(value = "/abrir-protocolos-reclamar/{id_secretaria}") // Gera novos protocolos
-    public ResponseEntity<Protocolo> insertReclamarByToken(@RequestBody Protocolo protocolo,
-            @PathVariable Long id_secretaria,
-            HttpServletRequest request) {
-        Integer id_m = authenticationService.getUserIdFromToken(request);
-        Municipe municipe = municipeRepository.getReferenceById(id_m);
-        Secretaria secretaria = secretariaRepository.getReferenceById(id_secretaria);
-        Endereco endereco = enderecoRepository.getReferenceById(municipe.getEndereco().getId_endereco());
-        String numeroProtocolo = protocoloService.gerarNumeroProtocolo();
-        protocolo.setNumero_protocolo(numeroProtocolo);
-        protocolo.setMunicipe(municipe);
-        protocolo.setEndereco(endereco);
-        protocolo.setSecretaria(secretaria);
-        protocoloRepository.save(protocolo);
+    // Enviar email de notificação
+    String mensagemEmail = construirMensagemEmailProtocoloCriado(protocolo, municipe);
+    notificacaoService.enviarNotificacaoProtocolo(
+        municipe.getEmail(),
+        protocolo.getNumero_protocolo(),
+        mensagemEmail
+    );
 
-        // Definir a prioridade com base no assunto
-        Prioridade prioridade = assuntoService.determinarPrioridade(protocolo.getAssunto());
-        protocolo.setPrioridade(prioridade);
+    String mensagemLog = String.format(
+            "Foi Registrado um novo protocolo: " + protocolo.getNumero_protocolo() + " em %s",
+            LocalDateTime.now().format(formatter));
 
-        LocalDate dataProtocolo = LocalDate.now();
-        LocalDate prazoConclusao = dataProtocolo.plusDays(prioridade.getDiasParaResolver());
-        protocolo.setPrazoConclusao(prazoConclusao);
+    Log log = new Log();
+    log.setMensagem(mensagemLog);
+    logRepository.save(log);
 
-        String mensagemLog = String.format(
-                "Foi Registrado um novo protocolo: " + protocolo.getNumero_protocolo() + " em %s",
-                LocalDateTime.now().format(formatter));
+    URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+            .buildAndExpand(protocolo.getId_protocolo()).toUri();
+    return ResponseEntity.created(uri).body(protocolo);
+}
 
-        Log log = new Log();
-        log.setMensagem(mensagemLog);
-        logRepository.save(log);
+@PostMapping(value = "/abrir-protocolos-sem-secretaria")
+public ResponseEntity<Protocolo> insertSecretariaNullByToken(@RequestBody Protocolo protocolo,
+        HttpServletRequest request) {
+    Integer id_municipe = authenticationService.getUserIdFromToken(request);
+    Municipe muninicipe = municipeRepository.getReferenceById(id_municipe);
+    Endereco endereco = enderecoRepository.getReferenceById(muninicipe.getEndereco().getId_endereco());
+    String numeroProtocolo = protocoloService.gerarNumeroProtocolo();
+    protocolo.setNumero_protocolo(numeroProtocolo);
+    protocolo.setMunicipe(muninicipe);
+    protocolo.setEndereco(endereco);
+    protocolo.setSecretaria(null);
+    
+    // Definir a prioridade com base no assunto
+    Prioridade prioridade = assuntoService.determinarPrioridade(protocolo.getAssunto());
+    protocolo.setPrioridade(prioridade);
+    
+    protocoloRepository.save(protocolo);
 
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(protocolo.getId_protocolo()).toUri();
-        return ResponseEntity.created(uri).body(protocolo);
-    }
+    // Enviar email de notificação
+    String mensagemEmail = construirMensagemEmailProtocoloCriado(protocolo, muninicipe);
+    notificacaoService.enviarNotificacaoProtocolo(
+        muninicipe.getEmail(),
+        protocolo.getNumero_protocolo(),
+        mensagemEmail
+    );
 
-    @PostMapping(value = "/abrir-protocolos-sem-secretaria") // Gera novos protocolos
-    public ResponseEntity<Protocolo> insertSecretariaNullByToken(@RequestBody Protocolo protocolo,
-            HttpServletRequest request) {
-        Integer id_municipe = authenticationService.getUserIdFromToken(request);
-        Municipe muninicipe = municipeRepository.getReferenceById(id_municipe);
-        Endereco endereco = enderecoRepository.getReferenceById(muninicipe.getEndereco().getId_endereco());
-        String numeroProtocolo = protocoloService.gerarNumeroProtocolo();
-        protocolo.setNumero_protocolo(numeroProtocolo);
-        protocolo.setMunicipe(muninicipe);
-        protocolo.setEndereco(endereco);
-        protocolo.setSecretaria(null);
-        protocoloRepository.save(protocolo);
+    String mensagemLog = String.format(
+            "Foi Registrado um novo protocolo: " + protocolo.getNumero_protocolo() + " em %s",
+            LocalDateTime.now().format(formatter));
 
-        // Definir a prioridade com base no assunto
-        Prioridade prioridade = assuntoService.determinarPrioridade(protocolo.getAssunto());
-        protocolo.setPrioridade(prioridade);
+    Log log = new Log();
+    log.setMensagem(mensagemLog);
+    logRepository.save(log);
 
-        String mensagemLog = String.format(
-                "Foi Registrado um novo protocolo: " + protocolo.getNumero_protocolo() + " em %s",
-                LocalDateTime.now().format(formatter));
-
-        Log log = new Log();
-        log.setMensagem(mensagemLog);
-        logRepository.save(log);
-
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(protocolo.getId_protocolo()).toUri();
-        return ResponseEntity.created(uri).body(protocolo);
-    }
-
-    @PostMapping(value = "/abrir-protocolos-reclamar-sem-secretaria") // Gera novos protocolos
-    public ResponseEntity<Protocolo> insertReclamarNullByToken(@RequestBody Protocolo protocolo,
-            HttpServletRequest request) {
-        Integer id_municipe = authenticationService.getUserIdFromToken(request);
-        Municipe muninicipe = municipeRepository.getReferenceById(id_municipe);
-        Endereco endereco = enderecoRepository.getReferenceById(muninicipe.getEndereco().getId_endereco());
-        String numeroProtocolo = protocoloService.gerarNumeroProtocolo();
-        protocolo.setNumero_protocolo(numeroProtocolo);
-        protocolo.setMunicipe(muninicipe);
-        protocolo.setEndereco(endereco);
-        protocolo.setSecretaria(null);
-        protocoloRepository.save(protocolo);
-
-        // Definir a prioridade com base no assunto
-        Prioridade prioridade = assuntoService.determinarPrioridade(protocolo.getAssunto());
-        protocolo.setPrioridade(prioridade);
-
-        LocalDate dataProtocolo = LocalDate.now();
-        LocalDate prazoConclusao = dataProtocolo.plusDays(prioridade.getDiasParaResolver());
-        protocolo.setPrazoConclusao(prazoConclusao);
-
-        String mensagemLog = String.format(
-                "Foi Registrado um novo protocolo: " + protocolo.getNumero_protocolo() + " em %s",
-                LocalDateTime.now().format(formatter));
-
-        Log log = new Log();
-        log.setMensagem(mensagemLog);
-        logRepository.save(log);
-
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(protocolo.getId_protocolo()).toUri();
-        return ResponseEntity.created(uri).body(protocolo);
-    }
+    URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+            .buildAndExpand(protocolo.getId_protocolo()).toUri();
+    return ResponseEntity.created(uri).body(protocolo);
+}
 
     @PostMapping(value = "/abrir-protocolos/{id_municipe}/{id_secretaria}") // Gera novos protocolos
     public ResponseEntity<Protocolo> insert(@RequestBody Protocolo protocolo, @PathVariable Integer id_municipe,
@@ -254,6 +249,14 @@ public class ProtocoloController {
                 .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
 
         Protocolo obj = protocoloService.updateStatus(numero_protocolo, protocolo, funcionario.getNome());
+        Municipe muninicipe = obj.getMunicipe();
+    // Enviar email de notificação
+    String mensagemEmail = construirMensagemEmailProtocoloCriado(protocolo, muninicipe);
+    notificacaoService.enviarNotificacaoProtocolo(
+        muninicipe.getEmail(),
+        protocolo.getNumero_protocolo(),
+        mensagemEmail
+    );
         return ResponseEntity.ok(obj);
     }
 
@@ -305,5 +308,18 @@ public class ProtocoloController {
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+
+    private String construirMensagemEmailProtocoloCriado(Protocolo protocolo, Municipe municipe) {
+        return String.format(
+            "Protocolo #%s criado\n" +
+            "Assunto: %s\n" +
+            "Prioridade: %s\n" +
+            "Data: %s",
+            protocolo.getNumero_protocolo(),
+            protocolo.getAssunto(),
+            protocolo.getPrioridade().toString(),
+            LocalDateTime.now().format(formatter)
+        );
     }
 }

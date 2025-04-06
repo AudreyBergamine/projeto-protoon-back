@@ -4,8 +4,10 @@ package com.proton;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
+@EnableAsync // ESSA ANOTAÇÃO É OBRIGATÓRIA
 public class ProtonApplication {
 
 	public static void main(String[] args) {
