@@ -18,9 +18,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-
-
 
 @Entity
 public class Devolutiva extends BaseEntity implements Serializable {
@@ -31,19 +30,20 @@ public class Devolutiva extends BaseEntity implements Serializable {
     private Integer id_devolutiva;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = {"email", "senha", "role", "num_CPF", "data_nascimento", 
-    "celular", "numTelefoneFixo", "endereco", "idFuncionario", "dataNascimento",
-    "enabled", "password", "accountNonLocked", "accountNonExpired", "credentialsNonExpired", "username"})
+    @JsonIgnoreProperties(value = { "email", "senha", "role", "num_CPF", "data_nascimento",
+            "celular", "numTelefoneFixo", "endereco", "idFuncionario", "dataNascimento",
+            "enabled", "password", "accountNonLocked", "accountNonExpired", "credentialsNonExpired", "username" })
     @JoinColumn(name = "id_funcionarioFK", referencedColumnName = "id")
     private Funcionario id_funcionario;
 
     @ManyToOne
-    @JsonIgnoreProperties(value = {"secretaria", "endereco","municipe", "assunto", "numero_protocolo", "data_protocolo", "descricao", "status", "valor" })
+    @JsonIgnoreProperties(value = { "secretaria", "endereco", "municipe", "assunto", "numero_protocolo",
+            "data_protocolo", "descricao", "status", "valor" })
     @JoinColumn(name = "id_protocoloFK", referencedColumnName = "id_protocolo")
     private Protocolo id_protocolo;
 
     @ManyToOne
-    @JsonIgnoreProperties({"nome_secretaria", "nome_responsavel", "email", "senha", "endereco"})
+    @JsonIgnoreProperties({ "nome_secretaria", "nome_responsavel", "email", "senha", "endereco" })
     @JoinColumn(name = "id_secretariaFK", referencedColumnName = "id_secretaria")
     private Secretaria id_secretaria;
 
@@ -53,6 +53,9 @@ public class Devolutiva extends BaseEntity implements Serializable {
 
     @Column(columnDefinition = "TEXT")
     private String devolutiva;
+
+    @Lob
+    private byte[] imagem;
 
     public Devolutiva() {
 
@@ -107,6 +110,13 @@ public class Devolutiva extends BaseEntity implements Serializable {
         this.id_secretaria = id_secretaria;
     }
 
+    public byte[] getImagem() {
+        return imagem;
+    }
+
+    public void setImagem(byte[] imagem) {
+        this.imagem = imagem;
+    }
 
     @Override
     public int hashCode() {

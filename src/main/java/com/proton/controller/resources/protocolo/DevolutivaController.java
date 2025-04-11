@@ -43,7 +43,7 @@ public class DevolutivaController {
 
     @Autowired
     private AuthenticationService authenticationService;
-    
+
     @Autowired
     private NotificacaoProtocoloService notificacaoService;
 
@@ -76,22 +76,19 @@ public class DevolutivaController {
     public ResponseEntity<Devolutiva> insertDevolutiva(@RequestBody Devolutiva devolutiva,
             @PathVariable Integer id_Protocolo,
             HttpServletRequest request) {
-        // Extração do ID do funcionário autenticado pelo TOKEN
         Integer id_funcionario = authenticationService.getUserIdFromToken(request);
         Long id_secretaria = fun.findBySecretaria(id_funcionario);
         if (id_funcionario != null) {
             Devolutiva insertDevolutiva = devolutivaService.insert(devolutiva, id_funcionario, id_Protocolo,
                     id_secretaria);
 
-                    Protocolo protocolo = protocoloService.findById(id_Protocolo);
-                    Municipe muninicipe = protocolo.getMunicipe();
-                    // Enviar email de notificação
-                    String mensagemEmail = construirMensagemEmailDevolutivaCriada(protocolo, muninicipe, insertDevolutiva);
-                    notificacaoService.enviarNotificacaoProtocolo(
-                        muninicipe.getEmail(),
-                        protocolo.getNumero_protocolo(),
-                        mensagemEmail
-            );
+            Protocolo protocolo = protocoloService.findById(id_Protocolo);
+            Municipe muninicipe = protocolo.getMunicipe();
+            String mensagemEmail = construirMensagemEmailDevolutivaCriada(protocolo, muninicipe, insertDevolutiva);
+            notificacaoService.enviarNotificacaoProtocolo(
+                    muninicipe.getEmail(),
+                    protocolo.getNumero_protocolo(),
+                    mensagemEmail);
             return ResponseEntity.status(HttpStatus.CREATED).body(insertDevolutiva);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -138,16 +135,16 @@ public class DevolutivaController {
         }
     }
 
-     private String construirMensagemEmailDevolutivaCriada(Protocolo protocolo, Municipe municipe, Devolutiva devolutiva) {
+    private String construirMensagemEmailDevolutivaCriada(Protocolo protocolo, Municipe municipe,
+            Devolutiva devolutiva) {
         return String.format(
-            "Devolutiva #%s criada\n" +
-            "Assunto: %s\n" +
-            "Prioridade: %s\n" +
-            "Data: %s",
-            protocolo.getNumero_protocolo(),
-            devolutiva.getDevolutiva(),
-            protocolo.getPrioridade().toString(),
-            LocalDateTime.now().format(formatter)
-        );
+                "Devolutiva #%s criada\n" +
+                        "Assunto: %s\n" +
+                        "Prioridade: %s\n" +
+                        "Data: %s",
+                protocolo.getNumero_protocolo(),
+                devolutiva.getDevolutiva(),
+                protocolo.getPrioridade().toString(),
+                LocalDateTime.now().format(formatter));
     }
 }
