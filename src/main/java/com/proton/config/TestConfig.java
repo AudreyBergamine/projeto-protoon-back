@@ -548,7 +548,28 @@ public class TestConfig implements CommandLineRunner {
                 enderecoRepository.saveAll(Arrays.asList(end1, end2, end3, end6));
                 secretariaRepository.saveAll(Arrays.asList(secSaude, secEducacao, secMeioAmb));
 
-                protocoloRepository.saveAll(Arrays.asList(prot1, prot2, prot3, prot4, prot5, prot6));
+                // Salvando os protocolos no banco de dados em lotes
+                protocoloRepository.saveAll(
+                                Arrays.asList(prot1, prot2, prot3, prot4, prot5, prot6, prot7, prot8, prot9, prot10));
+                protocoloRepository.saveAll(Arrays.asList(prot11, prot12, prot13, prot14, prot15, prot16, prot17,
+                                prot18, prot19, prot20));
+                protocoloRepository.saveAll(Arrays.asList(prot21, prot22, prot23, prot24, prot25, prot26, prot27,
+                                prot28, prot29, prot30));
+                protocoloRepository.saveAll(Arrays.asList(prot31, prot32, prot33, prot34, prot35, prot36, prot37,
+                                prot38, prot39, prot40));
+                protocoloRepository.saveAll(Arrays.asList(prot41, prot42, prot43, prot44, prot45, prot46, prot47,
+                                prot48, prot49, prot50));
+                protocoloRepository.saveAll(Arrays.asList(prot51, prot52, prot53, prot54, prot55, prot56, prot57,
+                                prot58, prot59, prot60));
+                protocoloRepository.saveAll(Arrays.asList(prot61, prot62, prot63, prot64, prot65, prot66, prot67,
+                                prot68, prot69, prot70));
+                protocoloRepository.saveAll(Arrays.asList(prot71, prot72, prot73, prot74, prot75, prot76, prot77,
+                                prot78, prot79, prot80));
+                protocoloRepository.saveAll(Arrays.asList(prot81, prot82, prot83, prot84, prot85, prot86, prot87,
+                                prot88, prot89, prot90));
+                protocoloRepository.saveAll(Arrays.asList(prot91, prot92, prot93, prot94, prot95, prot96, prot97,
+                                prot98, prot99, prot100));
+
                 assuntoRepository.saveAll((Arrays.asList(assunto1, assunto2, assunto3, assunto4)));
                 devolutivaRepository.save(dev1);
         }
