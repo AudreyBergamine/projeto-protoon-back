@@ -87,6 +87,14 @@ public class ComprovanteController {
         try {
             StatusComprovante status = StatusComprovante.valueOf(statusParam.toUpperCase());
             Comprovante comprovante = comprovanteService.atualizarStatus(id, status);
+
+            Protocolo protocolo = comprovante.getProtocolo();
+            Municipe muninicipe = protocolo.getMunicipe();
+            String mensagemEmail = construirMensagemEmailComprovanteAtualizado(protocolo, muninicipe, comprovante);
+            notificacaoService.enviarNotificacaoProtocolo(
+                    muninicipe.getEmail(),
+                    protocolo.getNumero_protocolo(),
+                    mensagemEmail);
             return ResponseEntity.ok(comprovante);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
