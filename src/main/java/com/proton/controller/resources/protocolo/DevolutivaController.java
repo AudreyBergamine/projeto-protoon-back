@@ -145,7 +145,7 @@ public class DevolutivaController {
                 "Devolutiva #%s criada\n" +
                 "✔️ Assunto: %s\n" +
                 "✔️ Prioridade: %s\n" +
-                "✔️ Data: %s" + 
+                "✔️ Data: %s\n" + 
 
                 "Você pode acompanhar o andamento pelo nosso sistema.\n\n" + 
                 "Atenciosamente,\n" + 
