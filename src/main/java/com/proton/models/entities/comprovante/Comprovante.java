@@ -57,4 +57,9 @@ public class Comprovante {
     @JsonIgnore
     @JoinColumn(name = "protocolo_id", nullable = false)
     private Protocolo protocolo;
+
+    public Object getPrioridade() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getPrioridade'");
+    }
 }

@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
-import java.util.Map;
-import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -22,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.proton.models.entities.comprovante.Comprovante;
 import com.proton.models.entities.municipe.Municipe;
 import com.proton.models.entities.protocolo.Protocolo;
@@ -31,8 +27,6 @@ import com.proton.models.enums.StatusComprovante;
 import com.proton.services.comprovante.ComprovanteService;
 import com.proton.services.notificacaoProtocolo.NotificacaoProtocoloService;
 import com.proton.services.protocolo.ProtocoloService;
-
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 @RestController
 @RequestMapping("/protoon/comprovantes")
@@ -107,14 +101,33 @@ public class ComprovanteController {
 
         private String construirMensagemEmailComprovanteCriado(Protocolo protocolo, Municipe municipe, Comprovante comprovante) {
         return String.format(
-            "Comprovante #%s criado\n" +
-            "Link para baixar a imagem: %s\n" +
-            "Prioridade: %s\n" +
-            "Status: %s",
+            "Comprovante #%s criado\n\n" + // Get Nome do Usuário
+            "Seu comprovante para o protocolo #%s foi registrado com sucesso!\n\n" + // Get Número do Protocolo
+            "Detalhes do comprovante:\n" +
+            "✔️ Número: %d\n" + // Get ID do Comprovante
+            "✔️ Data/hora do registro: %s\n" + // Get Data de Upload
+            "✔️ Status inicial: %s\n\n" + // Get Status do Comprovante
+            "✔️ Prioridade: %s\n" +
+            "✔️ Status: %s\n" +
+            "✔️ Link para baixar a imagem: %s\n" +
+
+            "Você pode acompanhar o andamento pelo nosso sistema.\n\n" + 
+            "Atenciosamente,\n" + 
+            "PROTO-ON - Protocolos Municipais 💜 \n\n" +
+
+            municipe.getNome(), //Nome do Usuário
+            protocolo.getNumero_protocolo(), // Número do Protocolo
             comprovante.getDataUpload(),
+            // LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
+            comprovante.getId(), // ID do Comprovante
+            comprovante.getPrioridade(), // Prioridade do Comprovante
+            comprovante.getStatus(), // Status do Comprovante
+            // comprovante.getPrioridade(), // Prioridade do Comprovante 
             comprovante.getUrlDownload(),
-            comprovante.getStatus(),
             LocalDateTime.now().format(formatter)
+
+
+            
         );
     }
 
@@ -123,18 +136,28 @@ public class ComprovanteController {
         Protocolo protocoloDoComprovante = comprovante.getProtocolo();
         
         return String.format(
-            "Protocolo: %s\n" +
-            "Comprovante #%s criado\n" +
-            "Link para baixar a imagem: %s\n" +
-            "Prioridade: %s\n" +
-            "Status: %s\n" +
-            "Data: %s",
-            protocoloDoComprovante.getNumero_protocolo(), // ou outro campo do protocolo que você queira mostrar
-            comprovante.getId(),
-            comprovante.getUrlDownload(),
-            comprovante.getStatus(),
+            "Prezado(a) %s,\n\n" + // Get Nome do Usuário
+            "O status do seu protocolo Nº #%s foi atualizado.\n\n" + // Get Número do Protocolo
+            "Detalhes da atualização:\n" +
+            // "Protocolo: %s\n" +
+            "✔️ Comprovante #%s criado\n" +
+            "✔️ Prioridade: %s\n" +
+            "✔️ Status: %s\n" +
+            "✔️ Data: %s" +
+            "✔️ Link para baixar a imagem: %s\n" +
+
+            "Você pode acompanhar o andamento pelo nosso sistema.\n\n" + 
+            "Atenciosamente,\n" + 
+            "PROTO-ON - Protocolos Municipais 💜 \n\n",
+
+            municipe.getNome(), // Nome do Usuário
+            protocoloDoComprovante.getNumero_protocolo(), // Número do Protocolo
+            comprovante.getId(), // ID do Comprovante
+            comprovante.getPrioridade(), // Prioridade do Comprovante
+            comprovante.getStatus(), // Status do Comprovante
             comprovante.getDataUpload(),
-            LocalDateTime.now().format(formatter)
+            LocalDateTime.now().format(formatter), // Data de Upload
+            comprovante.getUrlDownload() // URL para download do Comprovante
         );
     }
 
