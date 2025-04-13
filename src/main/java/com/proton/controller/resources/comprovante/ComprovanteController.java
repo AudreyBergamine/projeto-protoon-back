@@ -101,21 +101,23 @@ public class ComprovanteController {
 
         private String construirMensagemEmailComprovanteCriado(Protocolo protocolo, Municipe municipe, Comprovante comprovante) {
         return String.format(
-            "Comprovante #%s criado\n\n" + // Get Nome do Usuário
-            "Seu comprovante para o protocolo #%s foi registrado com sucesso!\n\n" + // Get Número do Protocolo
-            "Detalhes do comprovante:\n" +
-            "✔️ Número: %d\n" + // Get ID do Comprovante
-            "✔️ Data/hora do registro: %s\n" + // Get Data de Upload
-            "✔️ Status inicial: %s\n\n" + // Get Status do Comprovante
-            "✔️ Prioridade: %s\n" + // Get Prioridade do Comprovante
-            "✔️ Status: %s\n" + // Get Status do Comprovante
-            "✔️ Data: %s\n" + // Get Data de Upload
-            "✔️ Link para baixar a imagem: %s\n" + // Get URL para download do Comprovante
+            """
+            Prezado(a) %s,
+
+            Seu comprovante para o protocolo #%s foi registrado com sucesso! 
+            Detalhes do comprovante:
+            ✔️ Número: %d
+            ✔️ Data/hora do registro: %s 
+            ✔️ Status inicial: %s 
+            ✔️ Prioridade: %s 
+            ✔️ Status: %s 
+            ✔️ Data: %s 
+            ✔️ Link para baixar a imagem: %s 
 
             "Você pode acompanhar o andamento pelo nosso sistema.\n\n" + 
-            "Atenciosamente,\n" + 
-            "PROTO-ON - Protocolos Municipais 💜 \n\n" +
-
+            Atenciosamente,
+            PROTO-ON - Protocolos Municipais 💜
+            """,
             municipe.getNome(), //Nome do Usuário
             protocolo.getNumero_protocolo(), // Número do Protocolo
             comprovante.getDataUpload(),
@@ -140,19 +142,23 @@ public class ComprovanteController {
         Protocolo protocoloDoComprovante = comprovante.getProtocolo();
         
         return String.format(
-            "Prezado(a) %s,\n\n" + // Get Nome do Usuário
-            "O status do seu protocolo Nº #%s foi atualizado.\n\n" + // Get Número do Protocolo
-            "Detalhes da atualização:\n" +
-            // "Protocolo: %s\n" +
-            "✔️ Comprovante #%s criado\n" +
-            "✔️ Prioridade: %s\n" +
-            "✔️ Status: %s\n" +
-            "✔️ Data: %s" +
-            "✔️ Link para baixar a imagem: %s\n" +
+            """
+            Prezado(a) %s,
 
-            "Você pode acompanhar o andamento pelo nosso sistema.\n\n" + 
-            "Atenciosamente,\n" + 
-            "PROTO-ON - Protocolos Municipais 💜 \n\n",
+            O status do seu protocolo Nº #%s foi atualizado.
+
+            Detalhes da atualização:
+            ✔️ Comprovante #%s criado
+            ✔️ Prioridade: %s
+            ✔️ Status: %s
+            ✔️ Data: %s
+            ✔️ Link para baixar a imagem: %s
+
+            Você pode acompanhar o andamento pelo nosso sistema.
+
+            Atenciosamente,
+            PROTO-ON - Protocolos Municipais 💜
+            """,
 
             municipe.getNome(), // Nome do Usuário
             protocoloDoComprovante.getNumero_protocolo(), // Número do Protocolo

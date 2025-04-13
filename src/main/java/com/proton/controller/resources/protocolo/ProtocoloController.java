@@ -312,15 +312,19 @@ public ResponseEntity<Protocolo> insertSecretariaNullByToken(@RequestBody Protoc
 
     private String construirMensagemEmailProtocoloCriado(Protocolo protocolo, Municipe municipe) {
         return String.format(
-            "Prezado(a) %s,\n\n" + // Get Nome do Usuário
-            "Protocolo #%s criado\n" +
-            "Assunto: %s\n" +
-            "✔️ Prioridade: %s\n" +
-            "✔️ Data: %s\n" + 
+            """
+            Prezado(a) %s,
 
-            "Você pode acompanhar o andamento pelo nosso sistema.\n\n" + 
-            "Atenciosamente,\n" + 
-            "PROTO-ON - Protocolos Municipais 💜 \n\n",
+            Protocolo #%s criado
+            Assunto: %s
+            ✔️ Prioridade: %s
+            ✔️ Data: %s
+
+            Você pode acompanhar o andamento pelo nosso sistema.
+
+            Atenciosamente,
+            PROTO-ON - Protocolos Municipais 💜
+            """,
             municipe.getNome(), // Nome do Usuário
             protocolo.getNumero_protocolo(),
             protocolo.getAssunto(),

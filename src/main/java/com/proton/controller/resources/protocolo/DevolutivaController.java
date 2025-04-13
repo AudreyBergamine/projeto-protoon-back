@@ -138,24 +138,25 @@ public class DevolutivaController {
     private String construirMensagemEmailDevolutivaCriada(Protocolo protocolo, Municipe municipe,
             Devolutiva devolutiva) {
         return String.format(
-                
-                "Prezado(a) %s,\n\n" + // Get Nome do Usuário
-                "O status do seu protocolo Nº #%s foi atualizado.\n\n" + // Get Número do Protocolo
-                
-                "Devolutiva #%s criada\n" +
-                "✔️ Assunto: %s\n" +
-                "✔️ Prioridade: %s\n" +
-                "✔️ Data: %s\n" + 
-
-                "Você pode acompanhar o andamento pelo nosso sistema.\n\n" + 
-                "Atenciosamente,\n" + 
-                "PROTO-ON - Protocolos Municipais 💜 \n\n",
             
-                municipe.getNome(), // Nome do Usuário
-                protocolo.getNumero_protocolo(),
-                devolutiva.getDevolutiva(),
-                protocolo.getPrioridade().toString(),
-                
-                LocalDateTime.now().format(formatter));
+            """
+            Prezado(a) %s,
+            O status do seu protocolo Nº #%s foi atualizado.
+            
+            Devolutiva #%s criada
+            ✔️ Assunto: %s
+            ✔️ Prioridade: %s
+            ✔️ Data: %s
+
+            Você pode acompanhar o andamento pelo nosso sistema. 
+            Atenciosamente,
+            PROTO-ON - Protocolos Municipais 💜
+            """,
+            municipe.getNome(), // Nome do Usuário
+            protocolo.getNumero_protocolo(),
+            devolutiva.getDevolutiva(),
+            protocolo.getPrioridade().toString(),
+            
+            LocalDateTime.now().format(formatter));
     }
 }
