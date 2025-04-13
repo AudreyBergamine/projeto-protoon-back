@@ -114,7 +114,7 @@ public class ComprovanteController {
             ✔️ Data: %s 
             ✔️ Link para baixar a imagem: %s 
 
-            "Você pode acompanhar o andamento pelo nosso sistema.\n\n" + 
+            "Você pode acompanhar o andamento pelo nosso sistema.
             Atenciosamente,
             PROTO-ON - Protocolos Municipais 💜
             """,
