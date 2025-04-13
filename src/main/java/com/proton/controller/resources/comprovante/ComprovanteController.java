@@ -23,6 +23,8 @@ import org.springframework.web.server.ResponseStatusException;
 import com.proton.models.entities.comprovante.Comprovante;
 import com.proton.models.entities.municipe.Municipe;
 import com.proton.models.entities.protocolo.Protocolo;
+import com.proton.models.enums.Status;
+import static com.proton.models.enums.Status.CONCLUIDO;
 import com.proton.models.enums.StatusComprovante;
 import com.proton.services.comprovante.ComprovanteService;
 import com.proton.services.notificacaoProtocolo.NotificacaoProtocoloService;
@@ -107,9 +109,10 @@ public class ComprovanteController {
             "✔️ Número: %d\n" + // Get ID do Comprovante
             "✔️ Data/hora do registro: %s\n" + // Get Data de Upload
             "✔️ Status inicial: %s\n\n" + // Get Status do Comprovante
-            "✔️ Prioridade: %s\n" +
-            "✔️ Status: %s\n" +
-            "✔️ Link para baixar a imagem: %s\n" +
+            "✔️ Prioridade: %s\n" + // Get Prioridade do Comprovante
+            "✔️ Status: %s\n" + // Get Status do Comprovante
+            "✔️ Data: %s\n" + // Get Data de Upload
+            "✔️ Link para baixar a imagem: %s\n" + // Get URL para download do Comprovante
 
             "Você pode acompanhar o andamento pelo nosso sistema.\n\n" + 
             "Atenciosamente,\n" + 
@@ -124,7 +127,10 @@ public class ComprovanteController {
             comprovante.getStatus(), // Status do Comprovante
             // comprovante.getPrioridade(), // Prioridade do Comprovante 
             comprovante.getUrlDownload(),
-            LocalDateTime.now().format(formatter)
+            LocalDateTime.now().format(formatter),
+            
+            //  Nova função para obter a mensagem de status by Audrey
+            getMensagemStatus(protocolo)
 
 
             
@@ -161,5 +167,57 @@ public class ComprovanteController {
         );
     }
 
+    private String getMensagemStatus(Protocolo protocolo) {
+        switch(protocolo.getStatus()) {
+            case PAGAMENTO_PENDENTE:
+                return "Atenção: Seu protocolo aguarda pagamento. " +
+                       "Para dar continuidade ao processo, por favor, realize o pagamento conforme as instruções enviadas. " +
+                       "O protocolo só será analisado após a confirmação do pagamento.";
+                
+            case CIENCIA:
+                return "Seu protocolo foi recebido e está em análise inicial pela equipe técnica. " +
+                       "Você será notificado quando houver atualizações. " +
+                       "Caso necessário, podemos solicitar informações adicionais.";
+                
+            case CIENCIA_ENTREGA:
+                return "Seu protocolo está em fase de análise e entrega simultaneamente. " +
+                       "Nossa equipe está verificando a documentação enquanto prepara os materiais para entrega. " +
+                       "Você será notificado quando o processo for concluído.";
+                
+            case CONCLUIDO:
+                return "Seu protocolo foi concluído com sucesso! " +
+                       "Agradecemos seu contato e ficamos à disposição para novas solicitações. " +
+                       "Caso tenha alguma dúvida sobre o serviço prestado, entre em contato conosco.";
+                
+            case CANCELADO:
+                return "Seu protocolo foi cancelado conforme solicitado. " +
+                       "Caso tenha sido um engano ou queira reabrir o processo, entre em contato conosco " +
+                       "dentro do prazo de 5 dias úteis.";
+                
+            case RECUSADO:
+                return "Seu protocolo foi recusado após análise. " +
+                       "Você receberá em breve as justificativas detalhadas para a recusa. " +
+                       "Caso discorde da decisão, pode entrar com um recurso no prazo de 10 dias úteis.";
+                
+            default:
+                return "Seu protocolo está em andamento em nosso sistema. " +
+                       "Acompanhe as atualizações ou entre em contato conosco para mais informações.";
+        }
+    }
+
+    public String getMensagemPadrao(Protocolo protocolo) {
+        switch(protocolo.getStatus()) {
+            case PAGAMENTO_PENDENTE: return "Aguardando pagamento...";
+            default: return "Status atual: Informação indisponível.";
+        }
+    }
+
+    public String getCorStatus(Protocolo protocolo) {
+        switch(protocolo.getStatus()) {
+            case CONCLUIDO: return "#28a745"; // Verde
+            case RECUSADO: return "#dc3545";  // Vermelho
+            default: return "#6c757d"; // Cinza
+        }
+    }
 
 }
