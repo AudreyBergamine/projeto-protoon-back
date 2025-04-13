@@ -49,9 +49,9 @@ public class Documento {
 
     private String urlDownload;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    @JoinColumn(name = "protocolo_id", nullable = false)
+    @JoinColumn(name = "id_protocolo", nullable = false)
     private Protocolo protocolo;
-
 }
