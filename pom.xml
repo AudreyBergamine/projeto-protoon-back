@@ -1,41 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>	
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.2.4</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 
 	<groupId>com</groupId>
 	<artifactId>proton</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>proton</name>
-	<description>Demo project for Spring Boot</description>	
-	
+	<description>Demo project for Spring Boot</description>
+
 	<properties>
 		<java.version>17</java.version>
 	</properties>
 
 	<dependencies>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		 <dependency>
-      <groupId>org.springframework.session</groupId>
-      <artifactId>spring-session-core</artifactId>
-    </dependency>
+		<dependency>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-core</artifactId>
+		</dependency>
 
 		<dependency>
-    <groupId>io.springfox</groupId>
-    <artifactId>springfox-swagger2</artifactId>
-    <version>3.0.0</version> <!-- Use a versão mais recente -->
-</dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>3.0.0</version> <!-- Use a versão mais recente -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -44,14 +51,14 @@
 		</dependency>
 
 		<dependency>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
 		<dependency>
-		<groupId>com.h2database</groupId>
-		<artifactId>h2</artifactId>
-		<scope>runtime</scope>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 
 		<dependency>
@@ -71,10 +78,10 @@
 		</dependency>
 
 		<dependency>
-		<groupId>org.projectlombok</groupId>
-		<artifactId>lombok</artifactId>
-		<scope>provided</scope>
-	</dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -97,14 +104,25 @@
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 
-	<dependency>
-	<groupId>org.springframework.retry</groupId>
-	<artifactId>spring-retry</artifactId>
-</dependency>
-<dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-aspects</artifactId>
-</dependency>
+		<dependency>
+			<groupId>org.springframework.retry</groupId>
+			<artifactId>spring-retry</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.5.13</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.9</version>
+		</dependency>
 
 	</dependencies>
 
@@ -114,53 +132,54 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-		    <plugin>
-		        <groupId>com.microsoft.azure</groupId>
-		        <artifactId>azure-webapp-maven-plugin</artifactId>
-		        <version>2.12.0</version>
-		        <configuration>
-		            <schemaVersion>v2</schemaVersion>
-		            <resourceGroup>protoo</resourceGroup>
-		            <appName>protoon</appName>
-		            <pricingTier>P1</pricingTier>
-		            <region>westus</region>
-		            <runtime>
-		                <os>Windows</os>
-		                <javaVersion>Java 17</javaVersion>
-		                <webContainer>Java SE</webContainer>
-		            </runtime>
-		            <deployment>
-		                <resources>
-		                    <resource>
-		                        <directory>${project.basedir}/target</directory>
-		                        <includes>
-		                            <include>*.jar</include>
-		                        </includes>
-		                    </resource>
-		                </resources>
-		            </deployment>
-		        </configuration>
-		    </plugin>
-		    <plugin>
-		        <groupId>com.microsoft.azure</groupId>
-		        <artifactId>azure-webapp-maven-plugin</artifactId>
-		        <version>2.13.0</version>
-		        <configuration>
-		            <resourceGroup>ProtoOn</resourceGroup>
-		            <runtime/>
-		            <deployment>
-		                <resources>
-		                    <resource>
-		                        <directory>C:\Users\famil\OneDrive\Área de Trabalho\Clone De Novo\projeto-protoon/target</directory>
-		                        <includes>
-		                            <include>*.jar</include>
-		                        </includes>
-		                    </resource>
-		                </resources>
-		            </deployment>
-		            <appName>siteprotoon</appName>
-		        </configuration>
-		    </plugin>
+			<plugin>
+				<groupId>com.microsoft.azure</groupId>
+				<artifactId>azure-webapp-maven-plugin</artifactId>
+				<version>2.12.0</version>
+				<configuration>
+					<schemaVersion>v2</schemaVersion>
+					<resourceGroup>protoo</resourceGroup>
+					<appName>protoon</appName>
+					<pricingTier>P1</pricingTier>
+					<region>westus</region>
+					<runtime>
+						<os>Windows</os>
+						<javaVersion>Java 17</javaVersion>
+						<webContainer>Java SE</webContainer>
+					</runtime>
+					<deployment>
+						<resources>
+							<resource>
+								<directory>${project.basedir}/target</directory>
+								<includes>
+									<include>*.jar</include>
+								</includes>
+							</resource>
+						</resources>
+					</deployment>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.microsoft.azure</groupId>
+				<artifactId>azure-webapp-maven-plugin</artifactId>
+				<version>2.13.0</version>
+				<configuration>
+					<resourceGroup>ProtoOn</resourceGroup>
+					<runtime />
+					<deployment>
+						<resources>
+							<resource>
+								<directory>C:\Users\famil\OneDrive\Área de Trabalho\Clone De
+									Novo\projeto-protoon/target</directory>
+								<includes>
+									<include>*.jar</include>
+								</includes>
+							</resource>
+						</resources>
+					</deployment>
+					<appName>siteprotoon</appName>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
