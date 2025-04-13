@@ -100,7 +100,7 @@ public class DevolutivaController {
         // Criar a devolutiva apenas se o protocolo NÃO estiver cancelado
         if (!protocolo.getStatus().equals("CANCELADO")) {
             Devolutiva devolutiva = new Devolutiva(null, null, protocolo, Instant.now(),
-                    "O prazo de pagamento do boleto venceu");
+                    "O prazo de pagamento do boleto venceu ✖️");
 
             // Salvar a devolutiva no banco
             Devolutiva savedDevolutiva = devolutivaRepository.save(devolutiva);
@@ -138,13 +138,24 @@ public class DevolutivaController {
     private String construirMensagemEmailDevolutivaCriada(Protocolo protocolo, Municipe municipe,
             Devolutiva devolutiva) {
         return String.format(
+                
+                "Prezado(a) %s,\n\n" + // Get Nome do Usuário
+                "O status do seu protocolo Nº #%s foi atualizado.\n\n" + // Get Número do Protocolo
+                
                 "Devolutiva #%s criada\n" +
-                        "Assunto: %s\n" +
-                        "Prioridade: %s\n" +
-                        "Data: %s",
+                "✔️ Assunto: %s\n" +
+                "✔️ Prioridade: %s\n" +
+                "✔️ Data: %s" + 
+
+                "Você pode acompanhar o andamento pelo nosso sistema.\n\n" + 
+                "Atenciosamente,\n" + 
+                "PROTO-ON - Protocolos Municipais 💜 \n\n",
+            
+                municipe.getNome(), // Nome do Usuário
                 protocolo.getNumero_protocolo(),
                 devolutiva.getDevolutiva(),
                 protocolo.getPrioridade().toString(),
+                
                 LocalDateTime.now().format(formatter));
     }
 }
