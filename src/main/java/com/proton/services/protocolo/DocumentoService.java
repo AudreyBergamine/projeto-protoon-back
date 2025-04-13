@@ -23,6 +23,8 @@ import com.proton.models.entities.protocolo.Documento;
 import com.proton.models.entities.protocolo.Protocolo;
 import com.proton.models.repositories.DocumentoRepository;
 
+// TODO Otimizar o envio de documentos, cada documento manda uma requisição, na produção não pode ser assim
+
 @Service
 public class DocumentoService {
 
@@ -52,7 +54,6 @@ public class DocumentoService {
         }
     }
 
-
     // Salva múltiplos arquivos vinculados a um protocolo
 
     public List<Documento> salvarDocumentos(MultipartFile[] files, Protocolo protocolo) throws IOException {
@@ -68,8 +69,7 @@ public class DocumentoService {
         return documentosSalvos;
     }
 
-
-     // Método para salvar um único documento
+    // Método para salvar um único documento
     private Documento salvarDocumento(MultipartFile file, Protocolo protocolo) throws IOException {
         if (file.isEmpty()) {
             throw new RuntimeException("Falha ao armazenar arquivo vazio");
@@ -107,13 +107,11 @@ public class DocumentoService {
         return documentoRepository.save(documento);
     }
 
-    
     // Lista todos os documentos de um protocolo
 
     public List<Documento> listarDocumentosPorProtocolo(Protocolo protocolo) {
         return documentoRepository.findByProtocolo(protocolo);
     }
-
 
     // Carrega um documento como recurso para download
 
