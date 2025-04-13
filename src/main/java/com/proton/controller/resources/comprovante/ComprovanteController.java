@@ -23,8 +23,6 @@ import org.springframework.web.server.ResponseStatusException;
 import com.proton.models.entities.comprovante.Comprovante;
 import com.proton.models.entities.municipe.Municipe;
 import com.proton.models.entities.protocolo.Protocolo;
-import com.proton.models.enums.Status;
-import static com.proton.models.enums.Status.CONCLUIDO;
 import com.proton.models.enums.StatusComprovante;
 import com.proton.services.comprovante.ComprovanteService;
 import com.proton.services.notificacaoProtocolo.NotificacaoProtocoloService;

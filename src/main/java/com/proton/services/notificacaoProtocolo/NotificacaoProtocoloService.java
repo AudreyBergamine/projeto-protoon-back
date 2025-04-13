@@ -94,13 +94,13 @@ public class NotificacaoProtocoloService {
 
     private String construirCorpoEmail(ProtocoloNotificacao notificacao, String mensagemAtualizacao) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Prezado usuário,\n\n");
+        sb.append("Prezado(a) usuário(a),\n\n");
         sb.append("O protocolo #").append(notificacao.getNumeroProtocolo()).append(" foi atualizado.\n\n");
         sb.append("Detalhes da atualização:\n");
         sb.append(mensagemAtualizacao).append("\n\n");
-        sb.append("Data da atualização: ").append(new SimpleDateFormat("dd/MM/yyyy HH:mm").format(notificacao.getDataEnvio())).append("\n\n");
+        sb.append("✔️ Data da atualização: ").append(new SimpleDateFormat("dd/MM/yyyy HH:mm").format(notificacao.getDataEnvio())).append("\n\n");
         sb.append("Atenciosamente,\n");
-        sb.append("Sistema de Protocolos\n");
+        sb.append("PROTO-ON - Protocolos Municipais 💜 \n\n");
         
         return sb.toString();
     }
