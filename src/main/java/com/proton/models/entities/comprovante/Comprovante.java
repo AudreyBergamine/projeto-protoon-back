@@ -4,6 +4,7 @@ import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.proton.models.entities.protocolo.Protocolo;
+import com.proton.models.enums.Prioridade;
 import com.proton.models.enums.StatusComprovante;
 
 import jakarta.persistence.Column;
@@ -47,7 +48,7 @@ public class Comprovante {
     private Date dataUpload;
 
     private Long tamanhoArquivo;
-    
+
     private String urlDownload; // URL para download via localhost
 
     @Enumerated(EnumType.STRING)
@@ -58,8 +59,11 @@ public class Comprovante {
     @JoinColumn(name = "protocolo_id", nullable = false)
     private Protocolo protocolo;
 
-    public Object getPrioridade() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getPrioridade'");
+    @Enumerated(EnumType.STRING)
+    private Prioridade prioridade;
+
+    public Prioridade getPrioridade() {
+        return this.prioridade;
     }
+
 }

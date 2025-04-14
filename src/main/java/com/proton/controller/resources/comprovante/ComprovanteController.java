@@ -31,7 +31,7 @@ import com.proton.services.protocolo.ProtocoloService;
 @RestController
 @RequestMapping("/protoon/comprovantes")
 public class ComprovanteController {
-    
+
     @Autowired
     private ComprovanteService comprovanteService;
 
@@ -42,13 +42,16 @@ public class ComprovanteController {
     private NotificacaoProtocoloService notificacaoService;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-    
+
     @PostMapping("/{protocoloId}")
     public ResponseEntity<Comprovante> uploadComprovante(
             @PathVariable Integer protocoloId,
             @RequestParam("file") MultipartFile file) throws IOException {
-        
+
         Protocolo protocolo = protocoloService.findById(protocoloId);
+        if (protocolo == null) {
+            return ResponseEntity.notFound().build();
+        }
         Comprovante comprovante = comprovanteService.salvarOuAtualizarComprovante(file, protocolo);
         Municipe muninicipe = protocolo.getMunicipe();
         String mensagemEmail = construirMensagemEmailComprovanteCriado(protocolo, muninicipe, comprovante);
@@ -58,26 +61,26 @@ public class ComprovanteController {
                 mensagemEmail);
         return ResponseEntity.ok(comprovante);
     }
-    
+
     @GetMapping("/download/{filename:.+}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String filename) {
         Resource resource = comprovanteService.carregarComprovanteComoResource(filename);
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, 
+                .header(HttpHeaders.CONTENT_DISPOSITION,
                         "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
-    
+
     @PutMapping("/{id}/status")
     public ResponseEntity<Comprovante> atualizarStatus(
             @PathVariable Long id,
             @RequestParam("status") String statusParam) {
-    
+
         if (statusParam == null || statusParam.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                "O campo 'status' não pode ser vazio");
+                    "O campo 'status' não pode ser vazio");
         }
-    
+
         try {
             StatusComprovante status = StatusComprovante.valueOf(statusParam.toUpperCase());
             Comprovante comprovante = comprovanteService.atualizarStatus(id, status);
@@ -92,18 +95,19 @@ public class ComprovanteController {
             return ResponseEntity.ok(comprovante);
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                "Status inválido. Valores permitidos: " + Arrays.toString(StatusComprovante.values()));
+                    "Status inválido. Valores permitidos: " + Arrays.toString(StatusComprovante.values()));
         }
     }
 
-
-
-
-        private String construirMensagemEmailComprovanteCriado(Protocolo protocolo, Municipe municipe, Comprovante comprovante) {
+    private String construirMensagemEmailComprovanteCriado(Protocolo protocolo, Municipe municipe, Comprovante comprovante) {
+        String dataUploadFormatada = comprovante.getDataUpload() != null
+            ? formatter.format(LocalDateTime.ofInstant(comprovante.getDataUpload().toInstant(), java.time.ZoneId.systemDefault()))
+            : "Data indisponível";
+    
         return String.format(
             """
             Prezado(a) %s,
-
+    
             Seu comprovante para o protocolo #%s foi registrado com sucesso! 
             Detalhes do comprovante:
             ✔️ Número: %d
@@ -111,116 +115,114 @@ public class ComprovanteController {
             ✔️ Status inicial: %s 
             ✔️ Prioridade: %s 
             ✔️ Status: %s 
-            ✔️ Data: %s 
             ✔️ Link para baixar a imagem: %s 
-
-            "Você pode acompanhar o andamento pelo nosso sistema.
+    
+            Você pode acompanhar o andamento pelo nosso sistema.
             Atenciosamente,
             PROTO-ON - Protocolos Municipais 💜
             """,
-            municipe.getNome(), //Nome do Usuário
-            protocolo.getNumero_protocolo(), // Número do Protocolo
-            comprovante.getDataUpload(),
-            // LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
-            comprovante.getId(), // ID do Comprovante
-            comprovante.getPrioridade(), // Prioridade do Comprovante
-            comprovante.getStatus(), // Status do Comprovante
-            // comprovante.getPrioridade(), // Prioridade do Comprovante 
-            comprovante.getUrlDownload(),
-            LocalDateTime.now().format(formatter),
-            
-            //  Nova função para obter a mensagem de status by Audrey
-            getMensagemStatus(protocolo)
-
-
-            
+            municipe.getNome(),                        
+            protocolo.getNumero_protocolo(),           
+            comprovante.getId(),                       
+            dataUploadFormatada,                       
+            comprovante.getStatus(),                   
+            comprovante.getPrioridade() != null ? comprovante.getPrioridade() : "N/A",
+            comprovante.getStatus(),                  
+            comprovante.getUrlDownload()              
         );
     }
-
-    private String construirMensagemEmailComprovanteAtualizado(Protocolo protocolo, Municipe municipe, Comprovante comprovante) {
+    
+    private String construirMensagemEmailComprovanteAtualizado(Protocolo protocolo, Municipe municipe,
+            Comprovante comprovante) {
         // Acesse o protocolo diretamente do comprovante
         Protocolo protocoloDoComprovante = comprovante.getProtocolo();
-        
+
         return String.format(
-            """
-            Prezado(a) %s,
+                """
+                        Prezado(a) %s,
 
-            O status do seu protocolo Nº #%s foi atualizado.
+                        O status do seu protocolo Nº #%s foi atualizado.
 
-            Detalhes da atualização:
-            ✔️ Comprovante #%s criado
-            ✔️ Prioridade: %s
-            ✔️ Status: %s
-            ✔️ Data: %s
-            ✔️ Link para baixar a imagem: %s
+                        Detalhes da atualização:
+                        ✔️ Comprovante #%s criado
+                        ✔️ Prioridade: %s
+                        ✔️ Status: %s
+                        ✔️ Data: %s
+                        ✔️ Link para baixar a imagem: %s
 
-            Você pode acompanhar o andamento pelo nosso sistema.
+                        Você pode acompanhar o andamento pelo nosso sistema.
 
-            Atenciosamente,
-            PROTO-ON - Protocolos Municipais 💜
-            """,
+                        Atenciosamente,
+                        PROTO-ON - Protocolos Municipais 💜
+                        """,
 
-            municipe.getNome(), // Nome do Usuário
-            protocoloDoComprovante.getNumero_protocolo(), // Número do Protocolo
-            comprovante.getId(), // ID do Comprovante
-            comprovante.getPrioridade(), // Prioridade do Comprovante
-            comprovante.getStatus(), // Status do Comprovante
-            comprovante.getDataUpload(),
-            LocalDateTime.now().format(formatter), // Data de Upload
-            comprovante.getUrlDownload() // URL para download do Comprovante
+                municipe.getNome(), // Nome do Usuário
+                protocoloDoComprovante.getNumero_protocolo(), // Número do Protocolo
+                comprovante.getId(), // ID do Comprovante
+                comprovante.getPrioridade(), // Prioridade do Comprovante
+                comprovante.getStatus(), // Status do Comprovante
+                comprovante.getDataUpload(),
+                LocalDateTime.now().format(formatter), // Data de Upload
+                comprovante.getUrlDownload() // URL para download do Comprovante
         );
     }
 
     private String getMensagemStatus(Protocolo protocolo) {
-        switch(protocolo.getStatus()) {
+        switch (protocolo.getStatus()) {
             case PAGAMENTO_PENDENTE:
                 return "Atenção: Seu protocolo aguarda pagamento. " +
-                       "Para dar continuidade ao processo, por favor, realize o pagamento conforme as instruções enviadas. " +
-                       "O protocolo só será analisado após a confirmação do pagamento.";
-                
+                        "Para dar continuidade ao processo, por favor, realize o pagamento conforme as instruções enviadas. "
+                        +
+                        "O protocolo só será analisado após a confirmação do pagamento.";
+
             case CIENCIA:
                 return "Seu protocolo foi recebido e está em análise inicial pela equipe técnica. " +
-                       "Você será notificado quando houver atualizações. " +
-                       "Caso necessário, podemos solicitar informações adicionais.";
-                
+                        "Você será notificado quando houver atualizações. " +
+                        "Caso necessário, podemos solicitar informações adicionais.";
+
             case CIENCIA_ENTREGA:
                 return "Seu protocolo está em fase de análise e entrega simultaneamente. " +
-                       "Nossa equipe está verificando a documentação enquanto prepara os materiais para entrega. " +
-                       "Você será notificado quando o processo for concluído.";
-                
+                        "Nossa equipe está verificando a documentação enquanto prepara os materiais para entrega. " +
+                        "Você será notificado quando o processo for concluído.";
+
             case CONCLUIDO:
                 return "Seu protocolo foi concluído com sucesso! " +
-                       "Agradecemos seu contato e ficamos à disposição para novas solicitações. " +
-                       "Caso tenha alguma dúvida sobre o serviço prestado, entre em contato conosco.";
-                
+                        "Agradecemos seu contato e ficamos à disposição para novas solicitações. " +
+                        "Caso tenha alguma dúvida sobre o serviço prestado, entre em contato conosco.";
+
             case CANCELADO:
                 return "Seu protocolo foi cancelado conforme solicitado. " +
-                       "Caso tenha sido um engano ou queira reabrir o processo, entre em contato conosco " +
-                       "dentro do prazo de 5 dias úteis.";
-                
+                        "Caso tenha sido um engano ou queira reabrir o processo, entre em contato conosco " +
+                        "dentro do prazo de 5 dias úteis.";
+
             case RECUSADO:
                 return "Seu protocolo foi recusado após análise. " +
-                       "Você receberá em breve as justificativas detalhadas para a recusa. " +
-                       "Caso discorde da decisão, pode entrar com um recurso no prazo de 10 dias úteis.";
-                
+                        "Você receberá em breve as justificativas detalhadas para a recusa. " +
+                        "Caso discorde da decisão, pode entrar com um recurso no prazo de 10 dias úteis.";
+
             default:
                 return "Seu protocolo está em andamento em nosso sistema. " +
-                       "Acompanhe as atualizações ou entre em contato conosco para mais informações.";
+                        "Acompanhe as atualizações ou entre em contato conosco para mais informações.";
         }
     }
 
     public String getMensagemPadrao(Protocolo protocolo) {
-        switch(protocolo.getStatus()) {
-            case PAGAMENTO_PENDENTE: return "Aguardando pagamento...";
-            default: return "Status atual: Informação indisponível.";
+        switch (protocolo.getStatus()) {
+            case PAGAMENTO_PENDENTE:
+                return "Aguardando pagamento...";
+            default:
+                return "Status atual: Informação indisponível.";
         }
     }
 
     public String getCorStatus(Protocolo protocolo) {
-        switch(protocolo.getStatus()) {
-            case CONCLUIDO: return "#28a745"; // Verde
-            case RECUSADO: return "#dc3545";  // Vermelho
-            default: return "#6c757d"; // Cinza
+        switch (protocolo.getStatus()) {
+            case CONCLUIDO:
+                return "#28a745"; // Verde
+            case RECUSADO:
+                return "#dc3545"; // Vermelho
+            default:
+                return "#6c757d"; // Cinza
         }
     }
 
