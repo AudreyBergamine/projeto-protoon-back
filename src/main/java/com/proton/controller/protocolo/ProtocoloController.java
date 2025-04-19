@@ -332,4 +332,5 @@ public ResponseEntity<Protocolo> insertSecretariaNullByToken(@RequestBody Protoc
             LocalDateTime.now().format(formatter)
         );
     }
+    
 }

@@ -86,23 +86,10 @@ public class ProtocoloService {
 		Prioridade prioridade = assuntoService.determinarPrioridade(protocolo.getAssunto());
 		protocolo.setPrioridade(prioridade);
 
-		// // Calcular a diferença de dias entre a data atual e o prazo de conclusão
-		// long diasParaConclusao = dataProtocolo.until(prazoConclusao,
-		// ChronoUnit.DAYS);
-
 		protocolo.setNumero_protocolo(numeroProtocolo);
 		protocolo.setMunicipe(mun);
 		protocolo.setEndereco(end);
 		protocolo.setSecretaria(sec);
-		// if ("PAGAMENTO_PENDENTE".equals(protocolo.getStatus())) {
-		// protocolo.setPrazoConclusao(null);
-		// } else {
-		// // Definir a data do protocolo e calcular o prazo de conclusão
-		// LocalDate dataProtocolo = LocalDate.now();
-		// LocalDate prazoConclusao =
-		// dataProtocolo.plusDays(prioridade.getDiasParaResolver());
-		// protocolo.setPrazoConclusao(prazoConclusao);
-		// }
 
 		return protocoloRepository.save(protocolo);
 	}

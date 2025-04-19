@@ -1,5 +1,6 @@
 package com.proton.services.user;
 
+import com.proton.services.EmailService;
 import com.proton.services.JwtService;
 import com.proton.services.exceptions.ConstraintException;
 import com.proton.services.validations.RegisterValidationService;
@@ -21,6 +22,7 @@ import com.proton.models.entities.Log;
 import com.proton.models.entities.Municipe;
 import com.proton.models.entities.Secretaria;
 import com.proton.models.entities.User;
+import com.proton.models.entities.protocolo.Protocolo;
 import com.proton.models.repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -63,6 +65,9 @@ public class AuthenticationService {
 
   @Autowired
   private LogRepository logRepository;
+
+  @Autowired
+  private EmailService emailService;
 
   private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
@@ -120,6 +125,8 @@ public class AuthenticationService {
       Log log = new Log();
       log.setMensagem(mensagemLog);
       logRepository.save(log);
+
+      enviarEmailCreateAccount(savedUser);
 
       return AuthenticationResponse.builder() // Retorna o token, o id e a role do municipe, como resposta json.
           .id(savedUser.getId()) // Retorna o id
@@ -316,4 +323,24 @@ public class AuthenticationService {
       return null;
     }
   }
+
+  public String enviarEmailCreateAccount(Municipe municipe) {
+    String email = municipe.getEmail();
+    String assunto = "Cadastro realizado com sucesso!";
+    String mensagem = String.format(
+        "Olá %s,\n\n" +
+            "Seu cadastro foi realizado com sucesso no sistema.\n\n" +
+            "Seja bem vindo ao nosso sistema.\n\n" +
+            "Caso não tenha feito esse cadastro, entre em contato com o suporte.\n\n" +
+            "Atenciosamente,\nEquipe Protoon",
+        municipe.getNome());
+
+    try {
+      emailService.enviarEmailTexto(email, assunto, mensagem);
+      return "Email de boas-vindas enviado com sucesso.";
+    } catch (Exception e) {
+      return "Erro ao enviar email de boas-vindas: " + e.getMessage();
+    }
+  }
+
 }

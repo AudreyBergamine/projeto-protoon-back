@@ -142,7 +142,7 @@ public class TestConfig implements CommandLineRunner {
         private List<Municipe> criarMunicipes(List<Endereco> enderecos) {
                 String senha = passwordEncoder.encode("123456");
 
-                Municipe mun1 = new Municipe("Fulano", "wesleyoares7@gmail.com", senha, "973.087.140-04",
+                Municipe mun1 = new Municipe("Fulano", "fulano@email.com", senha, "973.087.140-04",
                                 "(11)96256-8965", LocalDate.of(1990, 5, 15), enderecos.get(4));
                 mun1.setRole(Role.MUNICIPE);
 
