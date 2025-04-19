@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -93,7 +94,7 @@ public class TestConfig implements CommandLineRunner {
                 );
                 devolutivaRepository.save(dev1);
         }
-        
+
         private List<Endereco> criarEnderecos() {
                 return Arrays.asList(
                                 // Apartamento no Centro
@@ -197,9 +198,8 @@ public class TestConfig implements CommandLineRunner {
                                 "Fiscalização Ambiental", "Denúncia de poluição sonora/ambiental na região");
 
                 // Data aleatória entre jan/2024 e hoje
-                Calendar inicio = Calendar.getInstance();
-                inicio.set(2024, Calendar.JANUARY, 1);
-                Calendar hoje = Calendar.getInstance();
+                LocalDate inicio = LocalDate.of(2025, 1, 1);
+                LocalDate hoje = LocalDate.now();
 
                 for (int i = 1; i <= quantidade; i++) {
                         // Seleciona aleatoriamente os componentes do protocolo
@@ -220,21 +220,17 @@ public class TestConfig implements CommandLineRunner {
                         } else {
                                 // Filtra status não permitidos para protocolos não urgentes, se necessário
                                 status = todosStatus[random.nextInt(todosStatus.length)];
-
-                                // Opcional: remover status específicos que não fazem sentido no início
-                                while (status == Status.CONCLUIDO || status == Status.CANCELADO) {
-                                        status = todosStatus[random.nextInt(todosStatus.length)];
-                                }
                         }
 
-                        // Gera data aleatória
-                        Date data = gerarDataAleatoria(inicio.getTime(), hoje.getTime());
+                        // Gera data aleatória diretamente como LocalDate
+                        LocalDate dataProtocolo = gerarDataAleatoria(inicio, hoje);
 
-                        // Calcula prazo com base no tempo de resolução do assunto
-                        LocalDate prazo = Instant.ofEpochMilli(data.getTime())
-                                        .atZone(ZoneId.systemDefault())
-                                        .toLocalDate()
-                                        .plusDays(assunto.getTempoResolucao());
+                        // Calcula prazo CORRETAMENTE adicionando os dias do assunto
+                        LocalDate prazoConclusao = dataProtocolo.plusDays(assunto.getTempoResolucao());
+
+                        // Converte para Date apenas se necessário (para manter compatibilidade)
+                        Date dataProtocoloDate = Date
+                                        .from(dataProtocolo.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
                         // Formata número do protocolo
                         String numero = String.format("%03d", i) + "-" + anoAtual;
@@ -246,12 +242,12 @@ public class TestConfig implements CommandLineRunner {
                                         municipe,
                                         endereco,
                                         assunto.getAssunto(),
-                                        data,
+                                        dataProtocoloDate,
                                         descricao,
                                         status,
                                         assunto.getValor_protocolo(),
                                         numero,
-                                        prazo);
+                                        prazoConclusao);
 
                         protocolo.setPrioridade(assunto.getPrioridade());
                         protocolos.add(protocolo);
@@ -260,10 +256,9 @@ public class TestConfig implements CommandLineRunner {
                 return protocolos;
         }
 
-        private Date gerarDataAleatoria(Date inicio, Date fim) {
-                long inicioMillis = inicio.getTime();
-                long fimMillis = fim.getTime();
-                long diff = fimMillis - inicioMillis + 1;
-                return new Date(inicioMillis + (long) (Math.random() * diff));
+        private LocalDate gerarDataAleatoria(LocalDate inicio, LocalDate fim) {
+                long dias = ChronoUnit.DAYS.between(inicio, fim);
+                long diasAleatorios = (long) (Math.random() * dias);
+                return inicio.plusDays(diasAleatorios);
         }
 }

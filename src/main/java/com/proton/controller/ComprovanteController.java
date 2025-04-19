@@ -114,7 +114,8 @@ public class ComprovanteController {
             ✔️ Data/hora do registro: %s 
             ✔️ Status inicial: %s 
             ✔️ Prioridade: %s 
-            ✔️ Status: %s 
+            ✔️ Status: %s
+            ✔️ Prazo para Conclusão ou Parecer: %s
             ✔️ Link para baixar a imagem: %s 
     
             Você pode acompanhar o andamento pelo nosso sistema.
@@ -127,7 +128,8 @@ public class ComprovanteController {
             dataUploadFormatada,                       
             comprovante.getStatus(),                   
             comprovante.getPrioridade() != null ? comprovante.getPrioridade() : "N/A",
-            comprovante.getStatus(),                  
+            comprovante.getStatus(),
+            protocolo.getPrazoConclusao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),                
             comprovante.getUrlDownload()              
         );
     }
@@ -148,6 +150,7 @@ public class ComprovanteController {
                         ✔️ Prioridade: %s
                         ✔️ Status: %s
                         ✔️ Data: %s
+                        ✔️ Prazo para Conclusão ou Parecer: %s
                         ✔️ Link para baixar a imagem: %s
 
                         Você pode acompanhar o andamento pelo nosso sistema.
@@ -163,6 +166,7 @@ public class ComprovanteController {
                 comprovante.getStatus(), // Status do Comprovante
                 comprovante.getDataUpload(),
                 LocalDateTime.now().format(formatter), // Data de Upload
+                protocolo.getPrazoConclusao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                 comprovante.getUrlDownload() // URL para download do Comprovante
         );
     }
