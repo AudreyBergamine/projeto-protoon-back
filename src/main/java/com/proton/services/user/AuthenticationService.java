@@ -1,7 +1,7 @@
 package com.proton.services.user;
 
+import com.proton.services.JwtService;
 import com.proton.services.exceptions.ConstraintException;
-import com.proton.services.jwt.JwtService;
 import com.proton.services.validations.RegisterValidationService;
 import com.proton.models.entities.token.Token;
 // import com.proton.models.repositories.DepartamentoRepository;
@@ -11,16 +11,16 @@ import com.proton.models.repositories.MunicipeRepository;
 import com.proton.models.repositories.SecretariaRepository;
 import com.proton.models.repositories.TokenRepository;
 import com.proton.models.entities.token.TokenType;
-import com.proton.controller.resources.auth.AuthenticationRequest;
-import com.proton.controller.resources.auth.AuthenticationResponse;
-import com.proton.controller.resources.auth.requests.RegisterRequest;
-import com.proton.controller.resources.auth.requests.RegisterRequestFuncionario;
-import com.proton.controller.resources.auth.requests.RegisterRequestMunicipe;
+import com.proton.controller.auth.AuthenticationRequest;
+import com.proton.controller.auth.AuthenticationResponse;
+import com.proton.controller.auth.requests.RegisterRequest;
+import com.proton.controller.auth.requests.RegisterRequestFuncionario;
+import com.proton.controller.auth.requests.RegisterRequestMunicipe;
+import com.proton.models.entities.Funcionario;
 import com.proton.models.entities.Log;
-import com.proton.models.entities.funcionario.Funcionario;
-import com.proton.models.entities.municipe.Municipe;
-import com.proton.models.entities.secretaria.Secretaria;
-import com.proton.models.entities.user.User;
+import com.proton.models.entities.Municipe;
+import com.proton.models.entities.Secretaria;
+import com.proton.models.entities.User;
 import com.proton.models.repositories.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

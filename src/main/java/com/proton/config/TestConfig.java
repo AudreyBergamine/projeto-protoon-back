@@ -19,12 +19,12 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.proton.models.entities.assunto.Assunto;
-import com.proton.models.entities.endereco.Endereco;
-import com.proton.models.entities.municipe.Municipe;
+import com.proton.models.entities.Assunto;
+import com.proton.models.entities.Endereco;
+import com.proton.models.entities.Municipe;
+import com.proton.models.entities.Secretaria;
 import com.proton.models.entities.protocolo.Devolutiva;
 import com.proton.models.entities.protocolo.Protocolo;
-import com.proton.models.entities.secretaria.Secretaria;
 import com.proton.models.enums.Prioridade;
 import com.proton.models.enums.Role;
 import com.proton.models.enums.Status;
@@ -142,7 +142,7 @@ public class TestConfig implements CommandLineRunner {
         private List<Municipe> criarMunicipes(List<Endereco> enderecos) {
                 String senha = passwordEncoder.encode("123456");
 
-                Municipe mun1 = new Municipe("Fulano", "fulano@email.com", senha, "973.087.140-04",
+                Municipe mun1 = new Municipe("Fulano", "wesleyoares7@gmail.com", senha, "973.087.140-04",
                                 "(11)96256-8965", LocalDate.of(1990, 5, 15), enderecos.get(4));
                 mun1.setRole(Role.MUNICIPE);
 
@@ -151,7 +151,7 @@ public class TestConfig implements CommandLineRunner {
                 mun2.setRole(Role.MUNICIPE);
 
                 Municipe secretario = new Municipe("Secretário", "secretario@email.com", senha, "999.654.321-00",
-                                "(11)96256-8965", LocalDate.of(1985, 10, 25), enderecos.get(3));
+                                "(11)96256-8965", LocalDate.of(1995, 03, 12), enderecos.get(3));
                 secretario.setRole(Role.SECRETARIO);
 
                 return Arrays.asList(mun1, mun2, secretario);

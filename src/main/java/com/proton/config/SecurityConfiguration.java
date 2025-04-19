@@ -12,21 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
-
-// import static com.proton.models.entities.roles.Permission.ADMIN_CREATE;
-// import static com.proton.models.entities.roles.Permission.ADMIN_DELETE;
-// import static com.proton.models.entities.roles.Permission.ADMIN_READ;
-// import static com.proton.models.entities.roles.Permission.ADMIN_UPDATE;
-// import static com.proton.models.entities.roles.Permission.MUNICIPE_CREATE;
-// import static com.proton.models.entities.roles.Permission.MUNICIPE_DELETE;
-// import static com.proton.models.entities.roles.Permission.MUNICIPE_READ;
-// import static com.proton.models.entities.roles.Permission.MUNICIPE_UPDATE;
-// import static com.proton.models.entities.roles.Role.ADMIN;
-// import static com.proton.models.entities.roles.Role.MUNICIPE;
-// import static org.springframework.http.HttpMethod.DELETE;
-// import static org.springframework.http.HttpMethod.GET;
-// import static org.springframework.http.HttpMethod.POST;
-// import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -54,6 +39,7 @@ public class SecurityConfiguration {
                                 .csrf(AbstractHttpConfigurer::disable)
                                 .authorizeHttpRequests(req -> req.requestMatchers(WHITE_LIST_URL)
                                                 .permitAll()
+                                                .requestMatchers("/protoon/municipe/municipes/recuperarSenha/**").permitAll()
                                                 .requestMatchers("/h2-console/**").permitAll()
 
                                                // .requestMatchers("/protoon/municipe/municipes").permitAll()

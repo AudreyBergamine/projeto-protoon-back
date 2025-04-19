@@ -4,8 +4,6 @@ package com.proton.services.protocolo;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,21 +11,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import com.proton.models.entities.Endereco;
 import com.proton.models.entities.Log;
-import com.proton.models.entities.endereco.Endereco;
-import com.proton.models.entities.municipe.Municipe;
+import com.proton.models.entities.Municipe;
+import com.proton.models.entities.Secretaria;
 import com.proton.models.entities.protocolo.Protocolo;
-import com.proton.models.entities.secretaria.Secretaria;
 import com.proton.models.enums.Prioridade;
 import com.proton.models.repositories.EnderecoRepository;
 import com.proton.models.repositories.LogRepository;
 import com.proton.models.repositories.MunicipeRepository;
 import com.proton.models.repositories.ProtocoloRepository;
 import com.proton.models.repositories.SecretariaRepository;
-import com.proton.services.Assunto.AssuntoService;
+import com.proton.services.AssuntoService;
+import com.proton.services.MunicipeService;
 import com.proton.services.exceptions.ResourceNotFoundException;
-
-import com.proton.services.municipe.MunicipeService;
 
 import jakarta.persistence.EntityNotFoundException;
 

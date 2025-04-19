@@ -10,11 +10,11 @@ import java.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.proton.models.entities.Funcionario;
 import com.proton.models.entities.Log;
-import com.proton.models.entities.funcionario.Funcionario;
+import com.proton.models.entities.Secretaria;
 import com.proton.models.entities.protocolo.Devolutiva;
 import com.proton.models.entities.protocolo.Protocolo;
-import com.proton.models.entities.secretaria.Secretaria;
 import com.proton.models.repositories.DevolutivaRepository;
 import com.proton.models.repositories.FuncionarioRepository;
 import com.proton.models.repositories.LogRepository;

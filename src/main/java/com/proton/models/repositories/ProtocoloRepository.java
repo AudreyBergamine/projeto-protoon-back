@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.proton.models.entities.municipe.Municipe;
+import com.proton.models.entities.Municipe;
 import com.proton.models.entities.protocolo.Protocolo;
 
 public interface ProtocoloRepository extends JpaRepository<Protocolo, Integer> {

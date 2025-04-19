@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.proton.models.entities.redirecionamento.Redirecionamento;
 import com.proton.models.enums.StatusRedirecionamento;
-import com.proton.models.redirecionamento.Redirecionamento;
 import com.proton.services.exceptions.RedirecionamentoDuplicadoException;
 
 @Service

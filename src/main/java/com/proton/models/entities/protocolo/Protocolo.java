@@ -8,13 +8,13 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.proton.models.entities.comprovante.Comprovante;
-import com.proton.models.entities.endereco.Endereco;
-import com.proton.models.entities.municipe.Municipe;
-import com.proton.models.entities.secretaria.Secretaria;
+import com.proton.models.entities.Comprovante;
+import com.proton.models.entities.Endereco;
+import com.proton.models.entities.Municipe;
+import com.proton.models.entities.Secretaria;
+import com.proton.models.entities.redirecionamento.Redirecionamento;
 import com.proton.models.enums.Prioridade;
 import com.proton.models.enums.Status;
-import com.proton.models.redirecionamento.Redirecionamento;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

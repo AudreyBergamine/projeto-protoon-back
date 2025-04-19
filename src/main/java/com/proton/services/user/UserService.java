@@ -7,7 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.proton.models.entities.user.User;
+import com.proton.models.entities.User;
 import com.proton.models.repositories.UserRepository;
 
 import java.security.Principal;

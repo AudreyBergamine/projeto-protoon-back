@@ -1,7 +1,8 @@
 package com.proton.models.entities.token;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.proton.models.entities.user.User;
+import com.proton.models.entities.User;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

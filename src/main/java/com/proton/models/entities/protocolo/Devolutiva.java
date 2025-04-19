@@ -9,8 +9,8 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.proton.models.entities.BaseEntity;
-import com.proton.models.entities.funcionario.Funcionario;
-import com.proton.models.entities.secretaria.Secretaria;
+import com.proton.models.entities.Funcionario;
+import com.proton.models.entities.Secretaria;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -4,7 +4,7 @@ import java.util.InputMismatchException;
 
 import org.springframework.stereotype.Service;
 
-import com.proton.controller.resources.auth.requests.RegisterRequestMunicipe;
+import com.proton.controller.auth.requests.RegisterRequestMunicipe;
 import com.proton.services.exceptions.InvalidFieldsException;
 
 @Service
