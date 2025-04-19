@@ -142,7 +142,7 @@ public class TestConfig implements CommandLineRunner {
         private List<Municipe> criarMunicipes(List<Endereco> enderecos) {
                 String senha = passwordEncoder.encode("123456");
 
-                Municipe mun1 = new Municipe("Fulano", "fulano@email.com", senha, "973.087.140-04",
+                Municipe mun1 = new Municipe("Fulano", "wesleyoares7@gmail.com", senha, "973.087.140-04",
                                 "(11)96256-8965", LocalDate.of(1990, 5, 15), enderecos.get(4));
                 mun1.setRole(Role.MUNICIPE);
 
@@ -165,9 +165,9 @@ public class TestConfig implements CommandLineRunner {
                 return Arrays.asList(
                                 new Assunto(null, "Iluminação Pública", secEducacao, 150.00, Prioridade.BAIXA, 7),
                                 new Assunto(null, "Buraco na Via", secMeioAmb, 80.00, Prioridade.ALTA, 3),
-                                new Assunto(null, "Coleta de Lixo", secMeioAmb, 120.00, Prioridade.MEDIA, 5),
+                                new Assunto(null, "Coleta de Lixo", secMeioAmb, 0.00, Prioridade.MEDIA, 5),
                                 new Assunto(null, "Podas de Árvores", secMeioAmb, 90.00, Prioridade.MEDIA, 5),
-                                new Assunto(null, "Limpeza de Bueiros", secSaude, 110.00, Prioridade.ALTA, 3),
+                                new Assunto(null, "Limpeza de Bueiros", secSaude, 0.00, Prioridade.ALTA, 3),
                                 new Assunto(null, "Reparo de Calçadas", secEducacao, 75.00, Prioridade.MEDIA, 5),
                                 new Assunto(null, "Sinalização Viária", secEducacao, 180.00, Prioridade.URGENTE, 1),
                                 new Assunto(null, "Manutenção de Parque", secMeioAmb, 95.00, Prioridade.BAIXA, 7),
