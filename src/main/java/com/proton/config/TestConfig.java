@@ -173,7 +173,7 @@ public class TestConfig implements CommandLineRunner {
                                 new Assunto(null, "Sinalização Viária", secEducacao, 180.00, Prioridade.URGENTE, 1),
                                 new Assunto(null, "Manutenção de Parque", secMeioAmb, 95.00, Prioridade.BAIXA, 7),
                                 new Assunto(null, "Drenagem de Água", secMeioAmb, 130.00, Prioridade.ALTA, 3),
-                                new Assunto(null, "Fiscalização Ambiental", secMeioAmb, 200.00, Prioridade.URGENTE, 1));
+                                new Assunto(null, "Outros", null, 0.00, Prioridade.BAIXA, 1));
         }
 
         private List<Protocolo> criarProtocolos(int quantidade, List<Secretaria> secretarias,
