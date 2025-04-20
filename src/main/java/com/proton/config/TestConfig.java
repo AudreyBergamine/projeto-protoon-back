@@ -195,7 +195,7 @@ public class TestConfig implements CommandLineRunner {
                                 "Sinalização Viária", "Placa de trânsito danificada ou faltando",
                                 "Manutenção de Parque", "Equipamentos de playground necessitando reparos",
                                 "Drenagem de Água", "Água acumulada após chuvas causando alagamento",
-                                "Fiscalização Ambiental", "Denúncia de poluição sonora/ambiental na região");
+                                "Outros", "Denúncia de poluição sonora/ambiental na região");
 
                 // Data aleatória entre jan/2024 e hoje
                 LocalDate inicio = LocalDate.of(2025, 1, 1);
@@ -217,6 +217,8 @@ public class TestConfig implements CommandLineRunner {
                         Status status;
                         if (assunto.getPrioridade() == Prioridade.URGENTE) {
                                 status = Status.EM_ANDAMENTO;
+                        } else if (assunto.getAssunto() == "Outros") {
+                                status = Status.EM_ANALISE;
                         } else {
                                 // Filtra status não permitidos para protocolos não urgentes, se necessário
                                 status = todosStatus[random.nextInt(todosStatus.length)];
@@ -224,6 +226,15 @@ public class TestConfig implements CommandLineRunner {
 
                         // Gera data aleatória diretamente como LocalDate
                         LocalDate dataProtocolo = gerarDataAleatoria(inicio, hoje);
+
+                        // Verificação e atualização de status para CANCELADO
+                        if (status == Status.PAGAMENTO_PENDENTE) {
+                                LocalDate tresDiasAtras = LocalDate.now().minusDays(3);
+
+                                if (dataProtocolo.isBefore(tresDiasAtras)) {
+                                        status = Status.CANCELADO;
+                                }
+                        }
 
                         // Calcula prazo CORRETAMENTE adicionando os dias do assunto
                         LocalDate prazoConclusao = dataProtocolo.plusDays(assunto.getTempoResolucao());
@@ -250,6 +261,7 @@ public class TestConfig implements CommandLineRunner {
                                         prazoConclusao);
 
                         protocolo.setPrioridade(assunto.getPrioridade());
+
                         protocolos.add(protocolo);
                 }
 

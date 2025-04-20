@@ -2,12 +2,13 @@ package com.proton.models.enums;
 
 public enum Status {
     PAGAMENTO_PENDENTE(1, "Pagamento Pendente"),
-    EM_ANDAMENTO(2, "Em Andamento"),
-    CIENCIA(3, "Ciência"), //TODO: Poderia ser "Em Análise? "
-    CIENCIA_ENTREGA(4, "Ciência e entrega"), // TODO: Poderia ser "Em Análise e Entrega?"
-    CONCLUIDO(5, "Concluído"),
-    CANCELADO(6, "Cancelado"),
-    RECUSADO(7, "Recusado");
+    EM_ANALISE(2, "Em Análise"),
+    EM_ANDAMENTO(3, "Em Andamento"),
+    CIENCIA(4, "Ciência"), //TODO: Poderia ser "Em Análise? "
+    CIENCIA_ENTREGA(5, "Ciência e entrega"), // TODO: Poderia ser "Em Análise e Entrega?"
+    CONCLUIDO(6, "Concluído"),
+    CANCELADO(7, "Cancelado"),
+    RECUSADO(8, "Recusado");
 
     private final int id; //private final, para não ser alterado
     private final String descricao; //private final, para não ser alterado

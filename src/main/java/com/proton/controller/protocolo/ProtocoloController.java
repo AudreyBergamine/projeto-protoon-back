@@ -26,6 +26,7 @@ import com.proton.models.entities.Municipe;
 import com.proton.models.entities.Secretaria;
 import com.proton.models.entities.protocolo.Protocolo;
 import com.proton.models.enums.Prioridade;
+import com.proton.models.enums.Status;
 import com.proton.models.repositories.EnderecoRepository;
 import com.proton.models.repositories.FuncionarioRepository;
 import com.proton.models.repositories.LogRepository;
@@ -74,7 +75,7 @@ public class ProtocoloController {
     private NotificacaoProtocoloService notificacaoService;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-    DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy");    
+    DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @GetMapping(value = "/todos-protocolos") // Adicionando a anotação GetMapping para o método findAll
     public ResponseEntity<List<Protocolo>> findAll() {
@@ -199,14 +200,20 @@ public class ProtocoloController {
         Municipe muninicipe = municipeRepository.getReferenceById(id_municipe);
         Endereco endereco = enderecoRepository.getReferenceById(muninicipe.getEndereco().getId_endereco());
         String numeroProtocolo = protocoloService.gerarNumeroProtocolo();
-        protocolo.setNumero_protocolo(numeroProtocolo);
-        protocolo.setMunicipe(muninicipe);
-        protocolo.setEndereco(endereco);
-        protocolo.setSecretaria(null);
 
         // Definir a prioridade com base no assunto
         Prioridade prioridade = assuntoService.determinarPrioridade(protocolo.getAssunto());
         protocolo.setPrioridade(prioridade);
+
+        LocalDate dataProtocolo = LocalDate.now();
+        LocalDate prazoConclusao = dataProtocolo.plusDays(prioridade.getDiasParaResolver());
+        protocolo.setPrazoConclusao(prazoConclusao);
+
+        protocolo.setNumero_protocolo(numeroProtocolo);
+        protocolo.setMunicipe(muninicipe);
+        protocolo.setEndereco(endereco);
+        protocolo.setSecretaria(null);
+        protocolo.setStatus(Status.EM_ANALISE);
 
         protocoloRepository.save(protocolo);
 
@@ -329,8 +336,7 @@ public class ProtocoloController {
                 protocolo.getAssunto(),
                 protocolo.getPrioridade().toString(),
                 LocalDateTime.now().format(formatter),
-                protocolo.getPrazoConclusao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
-        );
+                protocolo.getPrazoConclusao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
     }
 
 }
