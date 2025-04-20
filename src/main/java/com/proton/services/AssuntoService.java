@@ -2,6 +2,8 @@
 
 package com.proton.services;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proton.models.entities.Assunto;
+import com.proton.models.entities.Log;
 import com.proton.models.entities.Secretaria;
 import com.proton.models.repositories.AssuntoRepository;
+import com.proton.models.repositories.LogRepository;
 import com.proton.models.repositories.SecretariaRepository;
 import com.proton.models.enums.Prioridade;
 
@@ -22,6 +26,11 @@ public class AssuntoService {
 
     @Autowired
     private SecretariaRepository secretariaRepository;
+
+    @Autowired
+    private LogRepository logRepository;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     public List<Assunto> findAll() {
         return assuntoRepository.findAll();
@@ -56,17 +65,26 @@ public class AssuntoService {
         obj.setPrioridade(prioridade); // Define a prioridade no objeto
         // Define o tempo de resolução, usando o valor do enum
         obj.setTempoResolucao(prioridade.getDiasParaResolver());
+
+        String mensagemLog = String.format(
+                "Foi Registrado um novo Assunto: " + obj.getAssunto() + " em %s",
+                LocalDateTime.now().format(formatter));
+
+        Log log = new Log();
+        log.setMensagem(mensagemLog);
+        logRepository.save(log);
+
         return assuntoRepository.save(obj);
     }
 
     public Prioridade determinarPrioridade(String nomeAssunto) {
         Assunto assunto = assuntoRepository.findByAssunto(nomeAssunto);
-        
+
         if (assunto != null && assunto.getPrioridade() != null) {
             return assunto.getPrioridade(); // Retorna a prioridade cadastrada no banco
         }
-        
+
         return Prioridade.MEDIA; // Define um padrão caso não encontre
     }
-    
+
 }

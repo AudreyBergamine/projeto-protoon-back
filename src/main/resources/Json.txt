@@ -1,6 +1,6 @@
 FUNCIONARIO
 
-URL: http://localhost:8080/protoon/auth/register/funcionario/
+URL: http://localhost:8080/protoon/auth/register/funcionario/1
 
 {
   "endereco": {

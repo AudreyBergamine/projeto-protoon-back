@@ -170,6 +170,9 @@ public class ProtocoloController {
         LocalDate dataProtocolo = LocalDate.now();
         LocalDate prazoConclusao = dataProtocolo.plusDays(prioridade.getDiasParaResolver());
         protocolo.setPrazoConclusao(prazoConclusao);
+        if (protocolo.getValor() == 0) {
+            protocolo.setStatus(Status.EM_ANDAMENTO);
+        }
 
         protocoloRepository.save(protocolo);
 
