@@ -18,6 +18,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Data
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(exclude = { "funcionarios", "protocolos" }) // Evita loops recursivos na serialização
 public class Secretaria extends BaseEntity implements Serializable {

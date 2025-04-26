@@ -27,6 +27,7 @@ import com.proton.models.enums.StatusComprovante;
 import com.proton.services.ComprovanteService;
 import com.proton.services.NotificacaoProtocoloService;
 import com.proton.services.protocolo.ProtocoloService;
+import com.proton.models.enums.Status;
 
 @RestController
 @RequestMapping("/protoon/comprovantes")
@@ -86,7 +87,10 @@ public class ComprovanteController {
             Comprovante comprovante = comprovanteService.atualizarStatus(id, status);
 
             Protocolo protocolo = comprovante.getProtocolo();
+            protocolo.setStatus(Status.EM_ANDAMENTO);
+
             Municipe muninicipe = protocolo.getMunicipe();
+
             String mensagemEmail = construirMensagemEmailComprovanteAtualizado(protocolo, muninicipe, comprovante);
             notificacaoService.enviarNotificacaoProtocolo(
                     muninicipe.getEmail(),
@@ -139,13 +143,11 @@ public class ComprovanteController {
 
                         O status do seu protocolo Nº #%s foi atualizado.
 
-                        Detalhes da atualização:
-                        ✔️ Comprovante #%s criado
-                        ✔️ Prioridade: %s
+                        Detalhes da atualização do Comprovante:
+                        ✔️ Número do Comprovante #%s
                         ✔️ Status: %s
-                        ✔️ Data: %s
-                        ✔️ Prazo para Conclusão ou Parecer: %s
-                        ✔️ Link para baixar a imagem: %s
+                        ✔️ Data de Upload do Comprovante: %s
+                        ✔️ Prazo para Conclusão ou Parecer do Protocolo: %s
 
                         Você pode acompanhar o andamento pelo nosso sistema.
 
@@ -156,12 +158,10 @@ public class ComprovanteController {
                 municipe.getNome(), // Nome do Usuário
                 protocoloDoComprovante.getNumero_protocolo(), // Número do Protocolo
                 comprovante.getId(), // ID do Comprovante
-                comprovante.getPrioridade(), // Prioridade do Comprovante
                 comprovante.getStatus(), // Status do Comprovante
                 comprovante.getDataUpload(),
                 LocalDateTime.now().format(formatter), // Data de Upload
                 protocolo.getPrazoConclusao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                comprovante.getUrlDownload() // URL para download do Comprovante
         );
     }
 

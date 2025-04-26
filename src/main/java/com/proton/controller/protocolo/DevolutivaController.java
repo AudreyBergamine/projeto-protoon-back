@@ -146,6 +146,7 @@ public class DevolutivaController {
                         ✔️ Assunto: %s
                         ✔️ Prioridade: %s
                         ✔️ Data: %s
+                        ✔️ Status da Situação do Protocolo: %s
                         ✔️ Prazo para Conclusão ou Parecer: %s
 
                         Você pode acompanhar o andamento pelo nosso sistema.
@@ -158,6 +159,7 @@ public class DevolutivaController {
                 protocolo.getAssunto(), // %s 4 (Assunto) - Corrigido
                 protocolo.getPrioridade().toString(), // %s 5 (Prioridade)
                 LocalDateTime.now().format(formatter), // %s 6 (Data)
+                protocolo.getStatus(),
                 protocolo.getPrazoConclusao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
         );
     }
