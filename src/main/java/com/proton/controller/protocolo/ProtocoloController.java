@@ -324,6 +324,7 @@ public class ProtocoloController {
                         Prezado(a) %s,
 
                         Protocolo #%s criado
+                        Secretaria %s 
                         Assunto: %s
                         ✔️ Prioridade: %s
                         ✔️ Data: %s
@@ -336,6 +337,7 @@ public class ProtocoloController {
                         """,
                 municipe.getNome(), // Nome do Usuário
                 protocolo.getNumero_protocolo(),
+                protocolo.getSecretaria().getNome_secretaria(),
                 protocolo.getAssunto(),
                 protocolo.getPrioridade().toString(),
                 LocalDateTime.now().format(formatter),

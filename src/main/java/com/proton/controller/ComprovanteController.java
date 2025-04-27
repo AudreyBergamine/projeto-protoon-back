@@ -76,21 +76,28 @@ public class ComprovanteController {
     public ResponseEntity<Comprovante> atualizarStatus(
             @PathVariable Long id,
             @RequestParam("status") String statusParam) {
-
+    
         if (statusParam == null || statusParam.isBlank()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "O campo 'status' não pode ser vazio");
         }
-
+    
         try {
             StatusComprovante status = StatusComprovante.valueOf(statusParam.toUpperCase());
             Comprovante comprovante = comprovanteService.atualizarStatus(id, status);
-
+    
             Protocolo protocolo = comprovante.getProtocolo();
-            protocolo.setStatus(Status.EM_ANDAMENTO);
-
+            
+            // Lógica corrigida para atualizar o status do protocolo
+            if (status == StatusComprovante.APROVADO) {
+                protocolo.setStatus(Status.EM_ANDAMENTO);
+            } else if (status == StatusComprovante.REPROVADO) {
+                protocolo.setStatus(Status.RECUSADO);
+            }
+            // Não é necessário else, pois se for PENDENTE não muda o status do protocolo
+    
             Municipe muninicipe = protocolo.getMunicipe();
-
+    
             String mensagemEmail = construirMensagemEmailComprovanteAtualizado(protocolo, muninicipe, comprovante);
             notificacaoService.enviarNotificacaoProtocolo(
                     muninicipe.getEmail(),
@@ -161,7 +168,7 @@ public class ComprovanteController {
                 comprovante.getStatus(), // Status do Comprovante
                 comprovante.getDataUpload(),
                 LocalDateTime.now().format(formatter), // Data de Upload
-                protocolo.getPrazoConclusao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                protocolo.getPrazoConclusao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
         );
     }
 
