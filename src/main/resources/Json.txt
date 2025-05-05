@@ -14,50 +14,6 @@ URL: http://localhost:8080/protoon/auth/register/funcionario/1
     "estado": "SP",
     "pais": "Brasil"
   },
-  "nome": "Funcionário da Saude",
-  "email": "func.saude@email.com",
-  "senha": "123456",
-  "num_CPF": "418.081.504-49",
-  "celular": "(11)97874-2743",
-  "data_nascimento": "2004-03-09",
-  "role": "FUNCIONARIO"
-}
-
-{
-  "endereco": {
-    "tipo_endereco": "Residencial",
-    "num_cep": "08541-000",
-    "logradouro": "Estrada",
-    "num_endereco": "1611",
-    "complemento": "Casa",
-    "bairro": "Cháracara Laguna",
-    "cidade": "Ferraz de Vasconcelos",
-    "estado": "SP",
-    "pais": "Brasil"
-  },
-  "nome": "Coordenador da Saude",
-  "email": "coord.saude@email.com",
-  "senha": "123456",
-  "num_CPF": "783.514.060-82",
-  "celular": "(11)97874-2743",
-  "data_nascimento": "2004-03-09",
-  "role": "COORDENADOR"
-}
-
-URL: http://localhost:8080/protoon/auth/register/funcionario/2
-
-{
-  "endereco": {
-    "tipo_endereco": "Residencial",
-    "num_cep": "08541-000",
-    "logradouro": "Estrada",
-    "num_endereco": "1611",
-    "complemento": "Casa",
-    "bairro": "Cháracara Laguna",
-    "cidade": "Ferraz de Vasconcelos",
-    "estado": "SP",
-    "pais": "Brasil"
-  },
   "nome": "Funcionário da Educação",
   "email": "func.educacao@email.com",
   "senha": "123456",
@@ -83,6 +39,50 @@ URL: http://localhost:8080/protoon/auth/register/funcionario/2
   "email": "coord.educacao@email.com",
   "senha": "123456",
   "num_CPF": "723.411.930-21",
+  "celular": "(11)97874-2743",
+  "data_nascimento": "2004-03-09",
+  "role": "COORDENADOR"
+}
+
+URL: http://localhost:8080/protoon/auth/register/funcionario/2
+
+{
+  "endereco": {
+    "tipo_endereco": "Residencial",
+    "num_cep": "08541-000",
+    "logradouro": "Estrada",
+    "num_endereco": "1611",
+    "complemento": "Casa",
+    "bairro": "Cháracara Laguna",
+    "cidade": "Ferraz de Vasconcelos",
+    "estado": "SP",
+    "pais": "Brasil"
+  },
+  "nome": "Funcionário da Saude",
+  "email": "func.saude@email.com",
+  "senha": "123456",
+  "num_CPF": "418.081.504-49",
+  "celular": "(11)97874-2743",
+  "data_nascimento": "2004-03-09",
+  "role": "FUNCIONARIO"
+}
+
+{
+  "endereco": {
+    "tipo_endereco": "Residencial",
+    "num_cep": "08541-000",
+    "logradouro": "Estrada",
+    "num_endereco": "1611",
+    "complemento": "Casa",
+    "bairro": "Cháracara Laguna",
+    "cidade": "Ferraz de Vasconcelos",
+    "estado": "SP",
+    "pais": "Brasil"
+  },
+  "nome": "Coordenador da Saude",
+  "email": "coord.saude@email.com",
+  "senha": "123456",
+  "num_CPF": "783.514.060-82",
   "celular": "(11)97874-2743",
   "data_nascimento": "2004-03-09",
   "role": "COORDENADOR"
