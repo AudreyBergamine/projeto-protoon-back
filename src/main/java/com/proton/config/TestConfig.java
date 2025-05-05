@@ -7,7 +7,6 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -164,15 +163,28 @@ public class TestConfig implements CommandLineRunner {
                 Secretaria secMeioAmb = secretarias.get(2); // Secretaria de Meio Ambiente
 
                 return Arrays.asList(
-                                new Assunto(null, "Iluminação Pública", secEducacao, 150.00, Prioridade.BAIXA, 7),
+                                new Assunto(null, "Iluminação Pública", secMeioAmb, 150.00, Prioridade.BAIXA, 7),
                                 new Assunto(null, "Buraco na Via", secMeioAmb, 80.00, Prioridade.ALTA, 3),
                                 new Assunto(null, "Coleta de Lixo", secMeioAmb, 0.00, Prioridade.MEDIA, 5),
                                 new Assunto(null, "Podas de Árvores", secMeioAmb, 90.00, Prioridade.MEDIA, 5),
-                                new Assunto(null, "Limpeza de Bueiros", secSaude, 0.00, Prioridade.ALTA, 3),
-                                new Assunto(null, "Reparo de Calçadas", secEducacao, 75.00, Prioridade.MEDIA, 5),
-                                new Assunto(null, "Sinalização Viária", secEducacao, 180.00, Prioridade.URGENTE, 1),
+                                new Assunto(null, "Reparo de Calçadas", secMeioAmb, 75.00, Prioridade.MEDIA, 5),
                                 new Assunto(null, "Manutenção de Parque", secMeioAmb, 95.00, Prioridade.BAIXA, 7),
-                                new Assunto(null, "Drenagem de Água", secMeioAmb, 130.00, Prioridade.ALTA, 3),
+                                new Assunto(null, "Falta de professores", secEducacao, 100.00, Prioridade.URGENTE, 1),
+                                new Assunto(null, "Merenda escolar insuficiente", secEducacao, 85.00, Prioridade.ALTA,
+                                                3),
+                                new Assunto(null, "Transporte escolar atrasado", secEducacao, 75.00, Prioridade.ALTA,
+                                                3),
+                                new Assunto(null, "Infraestrutura precária na escola", secEducacao, 120.00,
+                                                Prioridade.MEDIA, 5),
+                                new Assunto(null, "Falta de médicos em unidade de saúde", secSaude, 120.00,
+                                                Prioridade.URGENTE, 1),
+                                new Assunto(null, "Demora no atendimento em hospital", secSaude, 90.00, Prioridade.ALTA,
+                                                3),
+                                new Assunto(null, "Falta de medicamentos", secSaude, 100.00, Prioridade.ALTA, 3),
+                                new Assunto(null, "Agendamento de consulta médica", secSaude, 40.00, Prioridade.MEDIA,
+                                                5),
+                                new Assunto(null, "Solicitação de transferência escolar", secEducacao, 55.00,
+                                                Prioridade.BAIXA, 7),
                                 new Assunto(null, "Outros", null, 0.00, Prioridade.BAIXA, 1));
         }
 
@@ -185,17 +197,35 @@ public class TestConfig implements CommandLineRunner {
                 String anoAtual = sdf.format(new Date());
 
                 // Mapeamento de descrições para cada assunto
-                Map<String, String> descricoes = Map.of(
-                                "Iluminação Pública", "Lâmpada queimada na via pública necessitando substituição",
-                                "Buraco na Via", "Buraco de aproximadamente 50cm de diâmetro na pista",
-                                "Coleta de Lixo", "Lixo acumulado há mais de 3 dias sem coleta",
-                                "Podas de Árvores", "Galhos de árvore obstruindo calçada e via pública",
-                                "Limpeza de Bueiros", "Bueiro entupido causando acúmulo de água",
-                                "Reparo de Calçadas", "Calçada danificada com desnível perigoso",
-                                "Sinalização Viária", "Placa de trânsito danificada ou faltando",
-                                "Manutenção de Parque", "Equipamentos de playground necessitando reparos",
-                                "Drenagem de Água", "Água acumulada após chuvas causando alagamento",
-                                "Outros", "Denúncia de poluição sonora/ambiental na região");
+                Map<String, String> descricoes = Map.ofEntries(
+                                Map.entry("Iluminação Pública",
+                                                "Lâmpada queimada na via pública necessitando substituição"),
+                                Map.entry("Buraco na Via", "Buraco de aproximadamente 50cm de diâmetro na pista"),
+                                Map.entry("Coleta de Lixo", "Lixo acumulado há mais de 3 dias sem coleta"),
+                                Map.entry("Podas de Árvores", "Galhos de árvore obstruindo calçada e via pública"),
+                                Map.entry("Reparo de Calçadas", "Calçada danificada com desnível perigoso"),
+                                Map.entry("Manutenção de Parque", "Equipamentos de playground necessitando reparos"),
+
+                                Map.entry("Falta de professores", "Turmas sem aula por ausência de professores"),
+                                Map.entry("Merenda escolar insuficiente",
+                                                "Quantidade de merenda abaixo da demanda dos alunos"),
+                                Map.entry("Transporte escolar atrasado",
+                                                "Ônibus escolar com recorrentes atrasos nos horários"),
+                                Map.entry("Infraestrutura precária na escola",
+                                                "Problemas como rachaduras, goteiras ou falta de ventilação nas salas"),
+                                Map.entry("Solicitação de transferência escolar",
+                                                "Pais ou responsáveis solicitam mudança de escola para o aluno"),
+
+                                Map.entry("Falta de médicos em unidade de saúde",
+                                                "Posto de saúde operando sem número adequado de médicos"),
+                                Map.entry("Demora no atendimento em hospital",
+                                                "Tempo de espera excessivo para atendimento emergencial"),
+                                Map.entry("Falta de medicamentos",
+                                                "Medicamentos básicos em falta na farmácia da unidade"),
+                                Map.entry("Agendamento de consulta médica",
+                                                "Dificuldade ou impossibilidade de marcar consulta pelo sistema"),
+
+                                Map.entry("Outros", "Demanda não listada nos assuntos padrão"));
 
                 // Data aleatória entre jan/2024 e hoje
                 LocalDate inicio = LocalDate.of(2025, 1, 1);
@@ -231,7 +261,7 @@ public class TestConfig implements CommandLineRunner {
                         if (status == Status.PAGAMENTO_PENDENTE) {
                                 LocalDate tresDiasAtras = LocalDate.now().minusDays(3);
 
-                                if (dataProtocolo.isBefore(tresDiasAtras)) {
+                                if (dataProtocolo.isBefore(tresDiasAtras) && assunto.getValor_protocolo() != 0) {
                                         status = Status.CANCELADO;
                                 }
                         }
