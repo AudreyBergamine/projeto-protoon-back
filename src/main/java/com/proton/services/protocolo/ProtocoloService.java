@@ -28,9 +28,12 @@ import com.proton.services.exceptions.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 
+// Camada de serviço que lida com a lógica de negócio relacionada ao Protocolo
 @Service
 public class ProtocoloService {
 
+	// Injeção de dependências para os repositórios necessários
+	// O Spring irá instanciar esses repositórios automaticamente
 	@Autowired
 	private ProtocoloRepository protocoloRepository;
 
@@ -52,6 +55,7 @@ public class ProtocoloService {
 	@Autowired
 	private LogRepository logRepository;
 
+	// Injeção de dependência do JdbcTemplate para executar consultas SQL
 	private final JdbcTemplate jdbcTemplate; // Para fazer consultas no sql
 	private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
@@ -76,6 +80,7 @@ public class ProtocoloService {
 		return obj.get();
 	}	
 
+	
 	public Protocolo insert(Protocolo protocolo, Integer id_municipe, Long id_secretaria) {
 		Municipe mun = municipeRepository.getReferenceById(id_municipe);
 		Secretaria sec = secretariaRepository.getReferenceById(id_secretaria);
@@ -99,12 +104,14 @@ public class ProtocoloService {
 		return protocoloRepository.findAllByMunicipe(municipe);
 	}
 
+	// Método para encontrar TODOS protocolos do MUNICIPE pelo Nome
 	public List<Protocolo> findByNomeMunicipe(String nomeMunicipe) {
 		Municipe municipe = municipeService.findByNome(nomeMunicipe);
 		Integer idMunicipe = municipe.getId();
 		return protocoloRepository.findByMunicipe(idMunicipe);
 	}
 
+	// Método para atualizar um protocolo
 	private void updateData(Protocolo entity, Protocolo obj) {
 		entity.setSecretaria(obj.getSecretaria());
 		entity.setMunicipe(obj.getMunicipe());
@@ -115,6 +122,7 @@ public class ProtocoloService {
 		entity.setStatus(obj.getStatus());
 	}
 
+	// Método para atualizar o status do protocolo
 	public Protocolo updateStatus(String numeroProtocolo, Protocolo protocolo, String Nomefuncionario) {
 		try {
 			Protocolo entity = protocoloRepository.findByNumeroProtocolo(numeroProtocolo)
@@ -161,6 +169,7 @@ public class ProtocoloService {
 		}
 	}
 
+	
 	public Protocolo updateRedirect(String numeroProtocolo, Protocolo protocolo, String Nomefuncionario) {
 		try {
 			Protocolo entity = protocoloRepository.findByNumeroProtocolo(numeroProtocolo)
@@ -186,6 +195,7 @@ public class ProtocoloService {
 		}
 	}
 
+	// Método para atualizar o valor do protocolo
 	public Protocolo updateValor(String numeroProtocolo, Protocolo valor, String Nomefuncionario) {
 		try {
 			Protocolo entity = protocoloRepository.findByNumeroProtocolo(numeroProtocolo)
@@ -209,7 +219,9 @@ public class ProtocoloService {
 		}
 	}
 
-	@SuppressWarnings("unused") // Serve para parar de aportar o um erro especifico ksksks, mas nem é erro.
+	@SuppressWarnings("unused") // Serve para parar de acusar um erro especifico
+	// Método para gerar o número do protocolo
+	// O número do protocolo é gerado com base no ano atual e no último número de protocolo
 	public String gerarNumeroProtocolo() {
 		String anoAtual = String.valueOf(LocalDate.now().getYear());
 		String sql = "SELECT MAX(SUBSTRING(numero_protocolo, 1, POSITION('-' IN numero_protocolo) - 1)) FROM Protocolo WHERE numero_protocolo LIKE ?";

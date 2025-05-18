@@ -40,13 +40,17 @@ import com.proton.services.user.AuthenticationService;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+// Marca a classe como um controlador REST, que lida com requisições HTTP
 @RestController
+// Define o caminho base para todos os endpoints dessa classe
 @RequestMapping(value = "/protoon/protocolo")
 public class ProtocoloController {
 
+    // Injeta automaticamente o service que contém regras de negócio
     @Autowired
     private ProtocoloService protocoloService;
 
+    // Repositórios que acessam os dados no banco (camada DAO)
     @Autowired
     private ProtocoloRepository protocoloRepository;
 
@@ -74,15 +78,18 @@ public class ProtocoloController {
     @Autowired
     private NotificacaoProtocoloService notificacaoService;
 
+    // Formatadores de data para logs e notificações
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    // Endpoint para retornar todos os protocolos do sistema
     @GetMapping(value = "/todos-protocolos") // Adicionando a anotação GetMapping para o método findAll
     public ResponseEntity<List<Protocolo>> findAll() {
         List<Protocolo> list = protocoloService.findAll();
         return ResponseEntity.ok().body(list);
     }
 
+    // Buscar protocolo pelo número
     @GetMapping(value = "/{numero_protocolo}") // Pesquisa por numero de protocolo
     public ResponseEntity<Protocolo> findByNumeroProtocolo(@PathVariable String numero_protocolo) {
         Optional<Protocolo> protocoloOptional = protocoloRepository.findByNumeroProtocolo(numero_protocolo);
@@ -94,6 +101,7 @@ public class ProtocoloController {
         }
     }
 
+    // Buscar protocolos por nome do munícipe
     @GetMapping(value = "/pesquisar-municipe/{nomeMunicipe}") // Pesquisar pelo nome do municipe
     public ResponseEntity<List<Protocolo>> findByNomeMunicipe(@PathVariable String nomeMunicipe) {
         List<Protocolo> protocolos = protocoloService.findByNomeMunicipe(nomeMunicipe);
@@ -104,20 +112,30 @@ public class ProtocoloController {
         }
     }
 
-    @GetMapping(value = "/pesquisar-id/{id}") // pesquisar pelo ID
+    // Buscar protocolo por ID
+    @GetMapping(value = "/pesquisar-id/{id}") 
     public ResponseEntity<Protocolo> findById(@PathVariable Integer id) {
         Protocolo obj = protocoloService.findById(id);
-        return ResponseEntity.ok().body(obj);// retorna UM protocolo
+        return ResponseEntity.ok().body(obj); // Retorna um objeto protocolo
     }
 
+     // Criar um novo protocolo com secretaria definida (usuário autenticado via token)
     @PostMapping(value = "/abrir-protocolos/{id_secretaria}")
     public ResponseEntity<Protocolo> insertByToken(@RequestBody Protocolo protocolo, @PathVariable Long id_secretaria,
             HttpServletRequest request) {
+        
+        // Obtém o ID do usuário (munícipe) autenticado
         Integer id_municipe = authenticationService.getUserIdFromToken(request);
+
+        // Recupera entidades necessárias para criar o protocolo
         Municipe mun = municipeRepository.getReferenceById(id_municipe);
         Secretaria sec = secretariaRepository.getReferenceById(id_secretaria);
         Endereco end = enderecoRepository.getReferenceById(mun.getEndereco().getId_endereco());
+        
+        // Gera número único de protocolo
         String numeroProtocolo = protocoloService.gerarNumeroProtocolo();
+
+        // Define os dados do protocolo
         protocolo.setNumero_protocolo(numeroProtocolo);
         protocolo.setMunicipe(mun);
         protocolo.setEndereco(end);
@@ -127,15 +145,17 @@ public class ProtocoloController {
         Prioridade prioridade = assuntoService.determinarPrioridade(protocolo.getAssunto());
         protocolo.setPrioridade(prioridade);
 
+        // Salva o protocolo no banco de dados
         protocoloRepository.save(protocolo);
 
-        // Enviar email de notificação
+        // Envia e-mail notificando a criação do protocolo
         String mensagemEmail = construirMensagemEmailProtocoloCriado(protocolo, mun);
         notificacaoService.enviarNotificacaoProtocolo(
                 mun.getEmail(),
                 protocolo.getNumero_protocolo(),
                 mensagemEmail);
-
+        
+        // Cria ou gera um log de registro do protocolo
         String mensagemLog = String.format(
                 "Foi Registrado um novo protocolo: " + protocolo.getNumero_protocolo() + " em %s",
                 LocalDateTime.now().format(formatter));
@@ -144,6 +164,7 @@ public class ProtocoloController {
         log.setMensagem(mensagemLog);
         logRepository.save(log);
 
+        // Retorna 201 Created com URI do novo recurso
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(protocolo.getId_protocolo()).toUri();
         return ResponseEntity.created(uri).body(protocolo);

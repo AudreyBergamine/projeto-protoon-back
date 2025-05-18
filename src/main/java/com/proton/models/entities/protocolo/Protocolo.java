@@ -1,5 +1,7 @@
 package com.proton.models.entities.protocolo;
+// Pacote onde a entidade está localizada
 
+// Importações necessárias para JPA, Jackson, etc.
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Date;
@@ -33,17 +35,23 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
+// Define que essa classe é uma entidade JPA que será mapeada para uma tabela no banco de dados
 @Entity
 @Table(name = "protocolo")
-@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" })
+// Ignora propriedades específicas do Hibernate ao serializar para JSON
+@JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) 
 public class Protocolo implements Serializable {
+
+	// Versão do serializable (necessário para envio de objetos em rede ou gravação)
 	private static final long serialVersionUID = 1L;
 
+	// Identificador único do protocolo (chave primária)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id_protocolo;
 
-	@ManyToOne // Associação Muitos para um
+	// Associação muitos-para-um com a entidade Secretaria
+	@ManyToOne 
 	@JoinColumn(name = "id_secretariaFK", referencedColumnName = "id_secretaria")
 	private Secretaria secretaria;
 
@@ -52,46 +60,60 @@ public class Protocolo implements Serializable {
 	// "id_departamento") //nome da chave estrangeira
 	// private Departamento departamento;
 
-	@ManyToOne // Associação Muitos para um
+	// Associação muitos-para-um com a entidade Municipe
+	@ManyToOne 
 	@JoinColumn(name = "id_municipeFK", referencedColumnName = "id")
 	private Municipe municipe; // Municipe ou empresa, por enquanto somente municipe
 
+	// Associação muitos-para-um com a entidade Endereco
 	@ManyToOne
 	@JoinColumn(name = "id_enderecoFK", referencedColumnName = "id_endereco")
 	private Endereco endereco;
 
+	// Campo do assunto do protocolo
 	private String assunto;
+
+	// Número único do protocolo
 	private String numero_protocolo;
 
 	// @JsonFormat(shape = JsonFormat.Shape.STRING, pattern =
 	// "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")//Formatação da data e hora
+	// Data e hora da criação do protocolo
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date data_protocolo; // Pega o momento da abertura do protocolo, substitui o tipo Date
 
+	// Descrição detalhada do protocolo (campo do tipo texto longo)
 	@Column(columnDefinition = "TEXT")
 	private String descricao;
 
+	// Status atual do protocolo (ex: ABERTO, CONCLUIDO, EM_ANALISE)
 	private Status status;
+
+	// Valor associado ao protocolo
 	private Double valor;
 
+	// Redirecionamentos associados ao protocolo
 	@JsonIgnore
 	@OneToMany(mappedBy = "protocolo", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Redirecionamento> redirecionamentos;
 
+	// Comprovante do protocolo
     @OneToOne(mappedBy = "protocolo", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Comprovante comprovante;
     
-
-
+	// Prazo para conclusão do protocolo
 	@Column(name = "prazo_conclusao")
 	private LocalDate prazoConclusao;
 
+	// Prioridade do protocolo (ex: ALTA, MEDIA, BAIXA)
 	@Enumerated(EnumType.STRING)
 	private Prioridade prioridade;
 
+	// Construtor padrão (obrigatório para JPA)
 	public Protocolo() {
 	}
 
+	// Construtor com parâmetros para facilitar a criação de objetos
 	public Protocolo(Integer id_protocolo, Secretaria secretaria, Municipe municipe, Endereco endereco,
 			String assunto, Date data_protocolo, String descricao, Status status,
 			Double valor, String numero_protocolo, LocalDate prazoConclusao) {
@@ -107,6 +129,10 @@ public class Protocolo implements Serializable {
 		this.numero_protocolo = numero_protocolo;
 		this.prazoConclusao = prazoConclusao;
 	}
+
+	// Getters e setters: 
+	// Métodos públicos para acessar e modificar os atributos privados da classe
+
 
 	public Integer getId_protocolo() {
 		return id_protocolo;

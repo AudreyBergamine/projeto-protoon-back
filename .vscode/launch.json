@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-ProtonApplication<proton>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.proton.ProtonApplication",
+            "projectName": "proton",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
