@@ -12,7 +12,7 @@ public class ProtonApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ProtonApplication.class, args);
-		System.out.println("\nRodando...\n");
+		System.out.println("\u001B[32m \nAplicação iniciada com SUCESSO!!! \u001B[0m");
 		//Run();
 	}
 }
