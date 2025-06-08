@@ -103,18 +103,17 @@ public class ProtocoloService {
 
 	// TODO: Audrey Bergamine
 
-	// Método para encontrar TODOS protocolos do MUNICIPE
-	public List<Protocolo> findByMunicipe(Municipe municipe) {
-		return protocoloRepository.findAllByMunicipe(municipe);
-	}
-
-	// Método para encontrar TODOS protocolos do MUNICIPE pelo Nome
-	public List<Protocolo> findByNomeMunicipe(String nomeMunicipe) {
-		Municipe municipe = municipeService.findByNome(nomeMunicipe);
-		Integer idMunicipe = municipe.getId();
-		return protocoloRepository.findByMunicipe(idMunicipe);
-	}
-
+	// Método para encontrar TODOS protocolos do MUNICIPE 
+	public List<Protocolo> findByMunicipe(Municipe municipe) { 
+		return protocoloRepository.findAllByMunicipe(municipe); 
+	} 
+	// Método para encontrar TODOS protocolos do MUNICIPE pelo Nome 
+	public List<Protocolo> findByNomeMunicipe(String nomeMunicipe) { 
+		Municipe municipe = municipeService.findByNome(nomeMunicipe); 
+		Integer idMunicipe = municipe.getId(); 
+		return protocoloRepository.findByMunicipe(idMunicipe); 
+	} 
+ 
 	// Método para atualizar um protocolo
 	private void updateData(Protocolo entity, Protocolo obj) {
 		entity.setSecretaria(obj.getSecretaria());

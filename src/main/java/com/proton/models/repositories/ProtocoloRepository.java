@@ -24,7 +24,6 @@ public interface ProtocoloRepository extends JpaRepository<Protocolo, Integer> {
     Optional<Protocolo> findByNumeroProtocolo(@Param("numeroProtocolo") String numeroProtocolo);
 
     // Busca todos os protocolos associados ao ID de um munícipe.
-    // Útil quando apenas o ID está disponível.
     @Query("SELECT p FROM Protocolo p WHERE p.municipe.id = :id_municipe")
     List<Protocolo> findByMunicipe(Integer id_municipe);
 }

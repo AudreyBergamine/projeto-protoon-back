@@ -264,7 +264,7 @@ public class ProtocoloController {
                 .buildAndExpand(protocolo.getId_protocolo()).toUri();
         return ResponseEntity.created(uri).body(protocolo);
     }
-
+    
     @PostMapping(value = "/abrir-protocolos/{id_municipe}/{id_secretaria}") // Gera novos protocolos
     public ResponseEntity<Protocolo> insert(@RequestBody Protocolo protocolo, @PathVariable Integer id_municipe,
             @PathVariable Long id_secretaria) {
@@ -321,28 +321,29 @@ public class ProtocoloController {
         }
     }
 
-    @GetMapping(value = "/meus-protocolos/bytoken") // Pesquisa os protocolos do munipe logado
-    public ResponseEntity<List<Protocolo>> findByIdMunicipe(HttpServletRequest request) {
-        // Extração do ID do munícipe autenticado pelo TOKEN (Atualização para a
-        // segurança do site)
-        // Validação para ver se o TOKEN foi recebido msm
-        Integer id = authenticationService.getUserIdFromToken(request);
-        if (id != null) {
-            Optional<Municipe> municipeOptional = municipeRepository.findById(id);
-            if (municipeOptional.isPresent()) {
-                Municipe municipe = municipeOptional.get();
-                // Usa o ID do municipe recuperado ali em cima para buscar os protocolos, igual
-                // antes
-                List<Protocolo> protocolos = protocoloService.findByMunicipe(municipe);
-                return ResponseEntity.ok().body(protocolos);// retorna VARIOS protocolos do MUNICIPE LOGADO
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-    }
+    // TODO: Audrey Bergamine 
 
+    // Endpoint para buscar os protocolos do munícipe logado via token
+    @GetMapping(value = "/meus-protocolos/bytoken")  
+    public ResponseEntity<List<Protocolo>> findByIdMunicipe(HttpServletRequest request) { 
+        // Extração do ID do munícipe autenticado pelo TOKEN (Atualização para a segurança do site) 
+        // Validação para ver se o TOKEN foi recebido msm 
+        Integer id = authenticationService.getUserIdFromToken(request); 
+        if (id != null) { 
+            Optional<Municipe> municipeOptional = municipeRepository.findById(id); 
+            if (municipeOptional.isPresent()) { 
+                Municipe municipe = municipeOptional.get(); 
+                // Usa o ID do municipe recuperado para buscar os protocolos do mesmo 
+                List<Protocolo> protocolos = protocoloService.findByMunicipe(municipe); 
+                return ResponseEntity.ok().body(protocolos); // retorna VARIOS protocolos do MUNICIPE LOGADO 
+            } else { 
+                return ResponseEntity.notFound().build();
+            } 
+        } else { 
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } 
+    } 
+ 
     private String construirMensagemEmailProtocoloCriado(Protocolo protocolo, Municipe municipe) {
         return String.format(
                 """
