@@ -80,7 +80,9 @@ public class ProtocoloService {
 		return obj.get();
 	}	
 
-	
+	// TODO: José Leandro
+
+	// Método para inserir um novo protocolo
 	public Protocolo insert(Protocolo protocolo, Integer id_municipe, Long id_secretaria) {
 		Municipe mun = municipeRepository.getReferenceById(id_municipe);
 		Secretaria sec = secretariaRepository.getReferenceById(id_secretaria);
@@ -98,6 +100,8 @@ public class ProtocoloService {
 
 		return protocoloRepository.save(protocolo);
 	}
+
+	// TODO: Audrey Bergamine
 
 	// Método para encontrar TODOS protocolos do MUNICIPE
 	public List<Protocolo> findByMunicipe(Municipe municipe) {

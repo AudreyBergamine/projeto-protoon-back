@@ -169,6 +169,8 @@ public class ProtocoloController {
                 .buildAndExpand(protocolo.getId_protocolo()).toUri();
         return ResponseEntity.created(uri).body(protocolo);
     }
+    
+    // TODO: José Leandro
 
     @PostMapping(value = "/abrir-protocolos-reclamar/{id_secretaria}")
     public ResponseEntity<Protocolo> insertReclamarByToken(@RequestBody Protocolo protocolo,
@@ -196,6 +198,8 @@ public class ProtocoloController {
         }
 
         protocoloRepository.save(protocolo);
+
+        // TODO: Vagner Matias
 
         // Enviar email de notificação
         String mensagemEmail = construirMensagemEmailProtocoloCriado(protocolo, municipe);

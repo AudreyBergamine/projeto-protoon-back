@@ -113,6 +113,8 @@ public class Protocolo implements Serializable {
 	public Protocolo() {
 	}
 
+	// TODO: José Leandro
+	
 	// Construtor com parâmetros para facilitar a criação de objetos
 	public Protocolo(Integer id_protocolo, Secretaria secretaria, Municipe municipe, Endereco endereco,
 			String assunto, Date data_protocolo, String descricao, Status status,
