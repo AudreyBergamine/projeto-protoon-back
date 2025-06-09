@@ -132,6 +132,7 @@ public class ComprovanteService {
         }
     }
 
+    //TODO ALDO atualizar o status
 public Comprovante atualizarStatus(Long id, StatusComprovante status) {
     Comprovante comprovante = comprovanteRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Comprovante não encontrado"));
@@ -140,4 +141,7 @@ public Comprovante atualizarStatus(Long id, StatusComprovante status) {
     
     return comprovanteRepository.save(comprovante);
 }
+
+
+
 }

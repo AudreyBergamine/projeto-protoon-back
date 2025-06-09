@@ -28,7 +28,6 @@ import com.proton.services.ComprovanteService;
 import com.proton.services.NotificacaoProtocoloService;
 import com.proton.services.protocolo.ProtocoloService;
 import com.proton.models.enums.Status;
-
 @RestController
 @RequestMapping("/protoon/comprovantes")
 public class ComprovanteController {
@@ -72,6 +71,8 @@ public class ComprovanteController {
                 .body(resource);
     }
 
+
+    //TODO ALDO COMPROVANTE CONTROLLER
     @PutMapping("/{id}/status")
     public ResponseEntity<Comprovante> atualizarStatus(
             @PathVariable Long id,
