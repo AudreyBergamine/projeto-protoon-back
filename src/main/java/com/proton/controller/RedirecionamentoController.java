@@ -64,7 +64,7 @@ public class RedirecionamentoController {
         return ResponseEntity.ok().body(service.findByIdFuncionario(id_fun));
     }
 
-    //TODO ALDO CRIAR REDIRECIONAMENTO
+    //TODO VAGNER CRIAR REDIRECIONAMENTO
     @PostMapping("/{id_prot}")
     public ResponseEntity<Redirecionamento> insertByToken(@RequestBody Redirecionamento redirecionamento,
             HttpServletRequest request, @PathVariable Integer id_prot) {
@@ -72,7 +72,6 @@ public class RedirecionamentoController {
     
         Redirecionamento redSaved = service.insert(redirecionamento, id_fun, id_prot);
         
-        // Obter o protocolo e munícipe associados
         Protocolo protocolo = redSaved.getProtocolo(); 
         Municipe municipe = protocolo.getMunicipe(); 
         
