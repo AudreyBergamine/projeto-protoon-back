@@ -29,5 +29,4 @@ public class ProtocoloNotificacao {
     
     private String status; // PENDENTE, ENVIADO, FALHA
     
-    // Getters e Setters
 }

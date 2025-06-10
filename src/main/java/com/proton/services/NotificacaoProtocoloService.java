@@ -24,7 +24,7 @@ public class NotificacaoProtocoloService {
     private final ProtocoloNotificacaoRepository protocoloNotificacaoRepository;
 
     public NotificacaoProtocoloService(EmailService emailService, 
-                                     ProtocoloNotificacaoRepository protocoloNotificacaoRepository) {
+                    ProtocoloNotificacaoRepository protocoloNotificacaoRepository) {
         this.emailService = emailService;
         this.protocoloNotificacaoRepository = protocoloNotificacaoRepository;
     }

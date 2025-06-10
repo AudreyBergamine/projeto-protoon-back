@@ -227,8 +227,8 @@ public class TestConfig implements CommandLineRunner {
 
                                 Map.entry("Outros", "Demanda não listada nos assuntos padrão"));
 
-                // Data aleatória entre jan/2024 e hoje
-                LocalDate inicio = LocalDate.of(2025, 1, 1);
+                // Data aleatória entre jun/2025 e hoje
+                LocalDate inicio = LocalDate.of(2025, 6, 1);
                 LocalDate hoje = LocalDate.now();
 
                 for (int i = 1; i <= quantidade; i++) {

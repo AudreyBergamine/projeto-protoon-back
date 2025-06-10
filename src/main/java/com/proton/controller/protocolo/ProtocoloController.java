@@ -82,8 +82,10 @@ public class ProtocoloController {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
     DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    // TODO: Vagner Matias
+
     // Endpoint para retornar todos os protocolos do sistema
-    @GetMapping(value = "/todos-protocolos") // Adicionando a anotação GetMapping para o método findAll
+    @GetMapping(value = "/todos-protocolos") 
     public ResponseEntity<List<Protocolo>> findAll() {
         List<Protocolo> list = protocoloService.findAll();
         return ResponseEntity.ok().body(list);
