@@ -38,7 +38,6 @@ CREATE TABLE municipe (
 
 
 
--- ******************** // TODO: CRIAR ENTIDADES E SEUS MÉTODOS **********************
 
 CREATE TABLE secretaria (
     id_secretaria INT PRIMARY KEY AUTO_INCREMENT,

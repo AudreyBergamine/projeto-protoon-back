@@ -23,7 +23,6 @@ import com.proton.models.entities.protocolo.Documento;
 import com.proton.models.entities.protocolo.Protocolo;
 import com.proton.models.repositories.DocumentoRepository;
 
-// TODO Otimizar o envio de documentos, cada documento manda uma requisição, na produção não pode ser assim
 
 @Service
 public class DocumentoService {

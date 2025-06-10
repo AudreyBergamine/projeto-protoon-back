@@ -44,7 +44,7 @@ public class EnderecoService {
 	}
 
     private void updateData(Endereco entity, Endereco obj) {
-		// TODO Auto-generated method stub
+		
         entity.setNum_cep(obj.getNum_cep());
         entity.setTipo_endereco(obj.getTipo_endereco());
         entity.setLogradouro(obj.getLogradouro());

@@ -247,7 +247,6 @@ public class ProtocoloController {
 
         protocoloRepository.save(protocolo);
 
-        //TODO SE PRECISAR ALDO ENVIO DE EMAIL Enviar email de notificação
         String mensagemEmail = construirMensagemEmailProtocoloCriado(protocolo, muninicipe);
         notificacaoService.enviarNotificacaoProtocolo(
                 muninicipe.getEmail(),

@@ -43,7 +43,6 @@ public class MunicipeController {
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    // TODO Remover acesso a lista completa! E retirar retorno do atributo senha!
 
     // Método que responde á requisição do tipo GET do HTTP
     @GetMapping
@@ -83,7 +82,6 @@ public class MunicipeController {
         return ResponseEntity.created(uri).body(obj); // Código 201
     }
 
-    // TODO NÃO TERÁ DELETE PARA O USUÁRIO >>>> REGRA DE NEGÓCIO
     // @DeleteMapping(value = "/{id}")
     // public ResponseEntity<Void> delete(@PathVariable Integer id){
     // service.delete(id);

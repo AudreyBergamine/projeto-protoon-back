@@ -18,7 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-//TODO: Precisamos adicionar o atributo Reclamação, o Funcionário terá uma lista de reclamações para visualizar
 @Data
 @SuperBuilder
 @NoArgsConstructor

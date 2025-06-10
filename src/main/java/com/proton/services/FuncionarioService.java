@@ -29,7 +29,6 @@ public class FuncionarioService {
         Optional<Funcionario> optionalFuncionario = repository.findById(id);
         return optionalFuncionario.orElse(null); // Retorna null se não encontrar o funcionário
     }
-    //TODO: Verificar se o método insert está correto!
     public Funcionario insert(Funcionario funcionario) {
         return repository.save(funcionario);
     }
