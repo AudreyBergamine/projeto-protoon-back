@@ -68,23 +68,29 @@ public class RedirecionamentoService {
         ", número do protocolo: "+protocolo.getNumero_protocolo());
         if(funcionario.getRole().equals(Role.FUNCIONARIO)){
 
-            redirecionamento.setStatusRedirecionamento(StatusRedirecionamento.ANDAMENTO);
+            redirecionamento.setStatusRedirecionamento(StatusRedirecionamento.ANDAMENTO); //Precisa ser aprovado pelo coordenador
 
         //Se a role é de COORDENADOR
         }else if(funcionario.getRole().equals(Role.COORDENADOR)){
             
-            redirecionamento.setStatusRedirecionamento(StatusRedirecionamento.APROVADO);
+            redirecionamento.setStatusRedirecionamento(StatusRedirecionamento.APROVADO); //Já aprovado pois coordenador criou
             redirecionamento.setDtConfirmacao(LocalDateTime.now().withNano(0));
         }
 
         return redirecionamentoRepository.save(redirecionamento);
     }
 
-    public Redirecionamento updateByCoordenador(Integer id_red, Redirecionamento obj, Integer id_fun){
-        Redirecionamento entity = redirecionamentoRepository.getReferenceById(id_red);
+    public Redirecionamento updateByCoordenador(Integer id_red, Redirecionamento obj, Integer id_fun){ //Obj redirecionamento novo
+        Redirecionamento entity = redirecionamentoRepository.getReferenceById(id_red); //Redirecionamento antigo
         Funcionario funcionario = funcionarioRepository.getReferenceById(id_fun);
         updateData(entity, obj, funcionario);
         return redirecionamentoRepository.save(entity);
+    }
+
+       public void updateData(Redirecionamento entity, Redirecionamento obj, Funcionario funcionario){
+        entity.setStatusRedirecionamento(obj.getStatusRedirecionamento());
+        entity.setDescricao(entity.getDescricao()+" Atualizado pelo coordernador: "+funcionario.getNome()+ ". No horário: "+LocalDateTime.now().withNano(0));
+        entity.setDtConfirmacao(LocalDateTime.now().withNano(0));
     }
 
 
@@ -100,9 +106,5 @@ public class RedirecionamentoService {
     return redirecionamentosAtualizados;
 }
 
-    public void updateData(Redirecionamento entity, Redirecionamento obj, Funcionario funcionario){
-        entity.setStatusRedirecionamento(obj.getStatusRedirecionamento());
-        entity.setDescricao(entity.getDescricao()+" Atualizado pelo coordernador: "+funcionario.getNome()+ ". No horário: "+LocalDateTime.now().withNano(0));
-        entity.setDtConfirmacao(LocalDateTime.now().withNano(0));
-    }
+ 
 }

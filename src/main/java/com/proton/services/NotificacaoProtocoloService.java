@@ -37,6 +37,9 @@ public class NotificacaoProtocoloService {
      * @param mensagemAtualizacao Mensagem com detalhes da atualização
      * @return CompletableFuture com resultado da operação
      */
+  
+  
+  //TODO ALDO SERVICE EMAIL
     @Async
     @Retryable(maxAttempts = 3, backoff = @Backoff(delay = 1000))
     public CompletableFuture<String> enviarNotificacaoProtocoloAsync(String emailDestinatario, 
@@ -47,15 +50,16 @@ public class NotificacaoProtocoloService {
             ProtocoloNotificacao notificacao = registrarNotificacao(emailDestinatario, numeroProtocolo, mensagemAtualizacao);
             
             // Monta o assunto e corpo do email
-            String assunto = "Atualização no Protocolo #" + numeroProtocolo;
-            String corpoEmail = construirCorpoEmail(notificacao, mensagemAtualizacao);
+            String assunto = "Atualização no Protocolo #" + numeroProtocolo; //Assunto já definido com numero do protocolo
+            String corpoEmail = construirCorpoEmail(notificacao, mensagemAtualizacao); //Corpo já definido (é uma string)
+            //MensagemAtualizacao tipo de mensagem, atualizacao, criacao
             
-            // Envia o email
-            emailService.enviarEmailTexto(emailDestinatario, assunto, corpoEmail);
+        
+            emailService.enviarEmailTexto(emailDestinatario, assunto, corpoEmail); //Método que envia o e-mail
             
             // Atualiza status para enviado
             notificacao.setStatus("ENVIADO");
-            protocoloNotificacaoRepository.save(notificacao);
+            protocoloNotificacaoRepository.save(notificacao); // Salva no banco de dados
             
             return CompletableFuture.completedFuture("Notificação enviada com sucesso para " + emailDestinatario);
         } catch (Exception e) {

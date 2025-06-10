@@ -23,6 +23,7 @@ public class NotificacaoProtocoloController {
         this.notificacaoService = notificacaoService;
     }
 
+
     @PostMapping("/{numeroProtocolo}/notificar")
     public ResponseEntity<String> notificarAtualizacao(
             @PathVariable String numeroProtocolo,

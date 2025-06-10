@@ -247,7 +247,7 @@ public class ProtocoloController {
 
         protocoloRepository.save(protocolo);
 
-        // Enviar email de notificação
+        //TODO SE PRECISAR ALDO ENVIO DE EMAIL Enviar email de notificação
         String mensagemEmail = construirMensagemEmailProtocoloCriado(protocolo, muninicipe);
         notificacaoService.enviarNotificacaoProtocolo(
                 muninicipe.getEmail(),
@@ -277,6 +277,7 @@ public class ProtocoloController {
         return ResponseEntity.created(uri).body(prot);
     }
 
+    //TODO VAGNER APROVAR REDIRECIONAMENTO
     @PutMapping("/alterar-protocolos/status/{numero_protocolo}") // Altera os protocolos (TODO REVER ISSO DEPOIS)
     public ResponseEntity<Protocolo> update(@PathVariable String numero_protocolo, @RequestBody Protocolo protocolo,
             HttpServletRequest request) {
@@ -346,6 +347,8 @@ public class ProtocoloController {
         } 
     } 
  
+
+
     private String construirMensagemEmailProtocoloCriado(Protocolo protocolo, Municipe municipe) {
         return String.format(
                 """

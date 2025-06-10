@@ -24,6 +24,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+//TODO VAGNER MODEL COMPROVANTE
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,10 +38,10 @@ public class Comprovante {
     private Long id;
 
     @Column(nullable = false)
-    private String nomeArquivo;
+    private String nomeArquivo; //nome do arquivo escolhido
 
     @Column(nullable = false)
-    private String tipoArquivo;
+    private String tipoArquivo; //jpg, pdf, png etc.
 
     @Column(nullable = false)
     private String caminhoArquivo; // Ou pode usar @Lob para armazenar o arquivo diretamente no banco
@@ -54,7 +56,7 @@ public class Comprovante {
     @Enumerated(EnumType.STRING)
     private StatusComprovante status = StatusComprovante.PENDENTE; // Valor padrão
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY) //1xn 1= protocolo e n = comprovante
     @JsonIgnore
     @JoinColumn(name = "protocolo_id", nullable = false)
     private Protocolo protocolo;
