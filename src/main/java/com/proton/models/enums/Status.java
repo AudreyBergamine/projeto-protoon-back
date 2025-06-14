@@ -4,7 +4,7 @@ public enum Status {
     PAGAMENTO_PENDENTE(1, "Pagamento Pendente"),
     EM_ANALISE(2, "Em Análise"),
     EM_ANDAMENTO(3, "Em Andamento"),
-    CIENCIA(4, "Ciência"), /
+    CIENCIA(4, "Ciência"), 
     CIENCIA_ENTREGA(5, "Ciência e entrega"),
     CONCLUIDO(6, "Concluído"),
     CANCELADO(7, "Cancelado"),

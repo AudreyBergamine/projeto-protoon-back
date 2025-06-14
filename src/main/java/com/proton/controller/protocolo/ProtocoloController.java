@@ -276,7 +276,6 @@ public class ProtocoloController {
         return ResponseEntity.created(uri).body(prot);
     }
 
-    //TODO VAGNER APROVAR REDIRECIONAMENTO
     @PutMapping("/alterar-protocolos/status/{numero_protocolo}") // Altera os protocolos (TODO REVER ISSO DEPOIS)
     public ResponseEntity<Protocolo> update(@PathVariable String numero_protocolo, @RequestBody Protocolo protocolo,
             HttpServletRequest request) {
@@ -295,6 +294,7 @@ public class ProtocoloController {
         return ResponseEntity.ok(obj);
     }
 
+  //TODO VAGNER APROVAR REDIRECIONAMENTO
     @PutMapping("/alterar-protocolos/departamento/{numero_protocolo}") // Altera os protocolos (TODO REVER ISSO DEPOIS)
     public ResponseEntity<Protocolo> updateRedirect(@PathVariable String numero_protocolo,
             @RequestBody Protocolo protocolo, HttpServletRequest request) {
@@ -304,6 +304,19 @@ public class ProtocoloController {
                 .orElseThrow(() -> new RuntimeException("Funcionário não encontrado"));
 
         Protocolo obj = protocoloService.updateRedirect(numero_protocolo, protocolo, funcionario.getNome());
+
+        Municipe municipe = protocolo.getMunicipe();
+          // Construir e enviar notificação
+        String mensagem = construirMensagemProtocoloRedirecionado(
+            protocolo, 
+            municipe
+        );
+        
+        notificacaoService.enviarNotificacaoProtocolo(
+            municipe.getEmail(),
+            protocolo.getNumero_protocolo(),
+            mensagem
+        );
         return ResponseEntity.ok(obj);
     }
 
@@ -372,6 +385,36 @@ public class ProtocoloController {
                 protocolo.getPrioridade().toString(),
                 LocalDateTime.now().format(formatter),
                 protocolo.getPrazoConclusao().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+    }
+
+
+      private String construirMensagemProtocoloRedirecionado(Protocolo protocolo, Municipe municipe) {
+        return String.format(
+            """
+            Prezado(a) %s,
+    
+            Seu protocolo #%s foi redirecionado.
+    
+            Nova secretaria responsável: %s
+            Data: %s
+            Assunto: %s
+            Prioridade: %s
+    
+            Observações: %s
+    
+            Você pode acompanhar o andamento pelo nosso sistema.
+    
+            Atenciosamente,
+            PROTO-ON - Protocolos Municipais 💜
+            """,
+            municipe.getNome(),
+            protocolo.getNumero_protocolo(),
+            protocolo.getSecretaria().getNome_secretaria() != null ? protocolo.getSecretaria().getNome_secretaria() : "Não informada",
+            LocalDateTime.now().format(formatter),
+            protocolo.getAssunto() != null ? protocolo.getAssunto() : "Não informado",
+            protocolo.getPrioridade() != null ? protocolo.getPrioridade().toString() : "Não definida",
+            "Sem observações"
+        );
     }
 
 }
