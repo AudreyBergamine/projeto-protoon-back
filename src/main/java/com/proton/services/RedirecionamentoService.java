@@ -80,8 +80,8 @@ public class RedirecionamentoService {
         return redirecionamentoRepository.save(redirecionamento);
     }
 
-    public Redirecionamento updateByCoordenador(Integer id_red, Redirecionamento obj, Integer id_fun){ //Obj redirecionamento novo
-        Redirecionamento entity = redirecionamentoRepository.getReferenceById(id_red); //Redirecionamento antigo
+    public Redirecionamento updateByCoordenador(Integer id_red, Redirecionamento obj, Integer id_fun){ 
+        Redirecionamento entity = redirecionamentoRepository.getReferenceById(id_red); 
         Funcionario funcionario = funcionarioRepository.getReferenceById(id_fun);
         updateData(entity, obj, funcionario);
         return redirecionamentoRepository.save(entity);
