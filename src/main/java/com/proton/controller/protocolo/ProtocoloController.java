@@ -83,14 +83,14 @@ public class ProtocoloController {
     DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     // TODO: Vagner Matias
-
+ 
     // Endpoint para retornar todos os protocolos do sistema
-    @GetMapping(value = "/todos-protocolos") 
-    public ResponseEntity<List<Protocolo>> findAll() {
-        List<Protocolo> list = protocoloService.findAll();
-        return ResponseEntity.ok().body(list);
-    }
-
+    @GetMapping(value = "/todos-protocolos")  
+    public ResponseEntity<List<Protocolo>> findAll() { 
+        List<Protocolo> list = protocoloService.findAll(); 
+        return ResponseEntity.ok().body(list); 
+    } 
+ 
     // Buscar protocolo pelo número
     @GetMapping(value = "/{numero_protocolo}") // Pesquisa por numero de protocolo
     public ResponseEntity<Protocolo> findByNumeroProtocolo(@PathVariable String numero_protocolo) {
@@ -342,7 +342,7 @@ public class ProtocoloController {
     @GetMapping(value = "/meus-protocolos/bytoken")  
     public ResponseEntity<List<Protocolo>> findByIdMunicipe(HttpServletRequest request) { 
         // Extração do ID do munícipe autenticado pelo TOKEN (Atualização para a segurança do site) 
-        // Validação para ver se o TOKEN foi recebido msm 
+        // Validação para ver se o TOKEN foi recebido mesmo 
         Integer id = authenticationService.getUserIdFromToken(request); 
         if (id != null) { 
             Optional<Municipe> municipeOptional = municipeRepository.findById(id); 
