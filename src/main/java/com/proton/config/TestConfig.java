@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.proton.models.entities.Assunto;
 import com.proton.models.entities.Endereco;
+import com.proton.models.entities.Funcionario;
 import com.proton.models.entities.Municipe;
 import com.proton.models.entities.Secretaria;
 import com.proton.models.entities.protocolo.Devolutiva;
@@ -31,6 +32,7 @@ import com.proton.models.enums.Status;
 import com.proton.models.repositories.AssuntoRepository;
 import com.proton.models.repositories.DevolutivaRepository;
 import com.proton.models.repositories.EnderecoRepository;
+import com.proton.models.repositories.FuncionarioRepository;
 import com.proton.models.repositories.MunicipeRepository;
 import com.proton.models.repositories.ProtocoloRepository;
 import com.proton.models.repositories.SecretariaRepository;
@@ -44,6 +46,9 @@ public class TestConfig implements CommandLineRunner {
 
         @Autowired
         private MunicipeRepository municipeRepository;
+
+        @Autowired
+        private FuncionarioRepository funcionarioRepository;
 
         @Autowired
         private SecretariaRepository secretariaRepository;
@@ -82,6 +87,9 @@ public class TestConfig implements CommandLineRunner {
                 // 5. Criar e salvar protocolos setando a quantidade
                 List<Protocolo> protocolos = criarProtocolos(50, secretarias, municipes, enderecos, assuntos);
                 protocoloRepository.saveAll(protocolos);
+
+                List<Funcionario> funcionarios = criarFuncionariosPersonalizados(secretarias);
+                funcionarioRepository.saveAll(funcionarios);
 
                 // 6. Criar e salvar devolutiva referenciando o protocolo
                 Devolutiva dev1 = new Devolutiva(
@@ -156,6 +164,66 @@ public class TestConfig implements CommandLineRunner {
 
                 return Arrays.asList(mun1, mun2, secretario);
         }
+
+        private List<Funcionario> criarFuncionariosPersonalizados(List<Secretaria> secretarias) {
+    String senhaCriptografada = passwordEncoder.encode("123456");
+
+    Endereco enderecoNovo = new Endereco(
+        null,
+        "Residencial",
+        "08541-000",
+        "Estrada",
+        "Casa",
+        "1611",
+        "", // ponto de referência
+        "Cháracara Laguna",
+        "Ferraz de Vasconcelos",
+        "SP",
+        "Brasil"
+    );
+
+      Endereco enderecoNovo2 = new Endereco(
+        null,
+        "Residencial",
+        "08541-000",
+        "Estrada",
+        "Casa",
+        "1612",
+        "", // ponto de referência
+        "Cháracara Laguna",
+        "Poá",
+        "SP",
+        "Brasil"
+    );
+
+    Funcionario funcionario = Funcionario.builder()
+        .nome("ProtonOn Roberto")
+        .email("funcionario@gmail.com")
+        .senha(senhaCriptografada)
+        .role(Role.FUNCIONARIO)
+        .num_CPF("026.479.380-32")
+        .data_nascimento(LocalDate.of(2024, 3, 9))
+        .celular("978742743")
+        .numTelefoneFixo(null)
+        .endereco(enderecoNovo)
+        .secretaria(secretarias.get(0)) // Secretaria de Educação
+        .build();
+
+    Funcionario coordenador = Funcionario.builder()
+        .nome("Coordenador Silva")
+        .email("coordenador@gmail.com")
+        .senha(senhaCriptografada)
+        .role(Role.COORDENADOR)
+        .num_CPF("105.222.333-44")
+        .data_nascimento(LocalDate.of(1985, 8, 20))
+        .celular("979991122")
+        .numTelefoneFixo(null)
+        .endereco(enderecoNovo2) // mesmo endereço
+        .secretaria(secretarias.get(0)) // mesma secretaria
+        .build();
+
+    return Arrays.asList(funcionario, coordenador);
+}
 
         private List<Assunto> criarAssuntos(List<Secretaria> secretarias) {
                 Secretaria secEducacao = secretarias.get(0); // Secretaria de Educação
